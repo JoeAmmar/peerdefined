@@ -1,0 +1,114 @@
+{% extends "definitions/definition_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Based on template from:
+https://github.com/arthuralvim/django-reversion-example/blob/3d457fcac4b285b83ea30d2c3f7e4289fc59b4d6/app1/templates/app1/ma_history.html -->
+
+
+{% block content %}
+<div>
+<center><h1>History</h1></center>
+<br>
+
+<!-- If definition has version history, create table... -->
+{% if version_list %}
+<center>
+<div class="table-responsive">
+  <!-- help with table from Faytraneozter's post (answere: Sep 7 '17 at 10:08) on: -->
+  <!-- https://stackoverflow.com/questions/41747667/bootstrap-4-responsive-tables-wont-take-up-100-width -->
+
+    <table class="table table-responsive w-100 d-block d-md-table">
+        <thead>
+            <tr>
+                <th>{% trans 'Date/time' %}</th>
+                <th>{% trans 'Data' %}</th>
+                <th>{% trans 'Revert' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ver in version_list %}
+
+                <tr>
+                    <th scope="row">{{ ver.revision.date_created }}  <br>
+                      <!-- Retrieve username if exists -->
+                      {% if ver.revision.user %}
+                        {{ ver.revision.user.get_username }}
+                        {% if ver.revision.user.get_full_name %} ({{ ver.revision.user.get_full_name }}){% endif %}
+                    {% else %}
+                        &mdash;
+                    {% endif %}</th>
+                    <td>
+                      <b>In-Text:</b> {{ ver.in_text }} <br>
+                      <b>Definition:</b> {{ ver.field_dict.defs }} <br>
+                      <b>Citation:</b> {{ver.citation}} <br>
+                       <b>Year:</b> {{ ver.field_dict.year }}  <br>
+                     <b>Citations:</b> {{ ver.field_dict.citeNumber }} <br>
+                      <b>Synonyms:</b> {{ ver.synonym }} <br>
+                      <b>Disciplines:</b> {{ ver.discipline }} </td>
+
+                      <!-- If first in forloop, mark row as current version of Model -->
+                      {% if forloop.first %}
+
+                      <td>
+                        <br>
+                        <br>
+                        <br>
+                        Current Version
+                      </td>
+                      {% else %}
+
+                      <td>
+                        <br>
+                        <br>
+                        <h2>
+                          <a href="{% url 'definitions:definition_revert' obj_pk ver.pk %}">
+                          &nbsp; &nbsp;   <span class="glyphicon glyphicon-check">
+                            </span>
+                          </a>
+                        </h2>
+                      </td>
+                      {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     <!-- code below paginates list of modifications on history page -->
+    <!-- adapted heavily from https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html -->
+    <!-- author: Vitor Freitas (Aug 3, 2016) -->
+
+    {% if version_list.has_other_pages %}
+    <br><br><br>
+  <center><ul class="pagination">
+    {% if version_list.has_previous %}
+      <li><a href="?page={{ version_list.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in version_list.paginator.page_range %}
+      {% if version_list.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if version_list.has_next %}
+      <li><a href="?page={{ version_list.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul></center>
+{% endif %}
+
+    </div>
+
+{% else %}
+    <p>{% trans "This object doesn't have a change history." %}</p>
+{% endif %}
+</div>
+  </center>
+{# <a href="{% url 'definitions:definition_list' %}">{% trans "Back" %}</a> #}
+<br>
+<br>
+<br>
+{% endblock content %}

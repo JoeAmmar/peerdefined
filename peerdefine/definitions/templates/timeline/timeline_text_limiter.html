@@ -1,0 +1,25 @@
+<script type="text/javascript">
+
+function limiter(stringy, limit=94){
+
+// function to limit text for each element in timeline
+string = stringy
+splitString = string.split(/(\s+)/);
+currentCount = 0;
+newString = '';
+for (var i = 0; i < splitString.length; i++) {
+  if (currentCount < limit) {
+    newString += splitString[i]
+    currentCount += splitString[i].length
+  }
+}
+
+if (string.length > limit) {
+newString += "..."
+}
+currentCount = 0;
+return newString;
+}
+
+
+</script>

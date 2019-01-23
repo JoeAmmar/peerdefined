@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load notifications_tags %}
+{% load socialaccount %}
+
+<!--
+Code adapted from the following sources (please contact if anything is missing)
+https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_navbar_collapse&stacked=h -->
+
+<html lang="en" dir="ltr">
+  <head>
+
+    <meta charset="utf-8">
+    <title>Base</title>
+
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Jquery (needed for citation functionality)-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <!-- Older version taken out 7/22/18 in favor of version 2.2.1 -->
+        <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
+
+        <!-- Google Style font-family: 'Gaegu', cursive  -->
+
+        <link href="https://fonts.googleapis.com/css?family=Gaegu" rel="stylesheet">
+
+<!-- Google Style font-family: 'Ruslan+Display', cursive  -->
+        <link href="https://fonts.googleapis.com/css?family=Ruslan+Display" rel="stylesheet">
+
+        <script type="text/javascript" src="{% static 'peerDefine/js/jquery.autocompleteDropdown.js' %}"></script>
+
+    <!-- USED FOR AUTOCOMPLETE DJANGO  -->
+    <script src="https://intercoolerreleases-leaddynocom.netdna-ssl.com/intercooler-1.1.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- BOOTBOX WILL WORK IF THIS IS UNCOMMENTED: -->
+    <!-- <script
+    			  src="https://code.jquery.com/jquery-2.2.4.min.js"
+    			  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    			  crossorigin="anonymous"></script> -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+      <!-- USED FOR CREATING ALERT POP-UPS WITH BOOTSTRAP -->
+        <script type='text/javascript' src='{% static 'peerDefine/js/bootbox.min.js' %}'></script>
+
+
+    <!-- NOT SURE IF NECESSARY  -->
+        <script type='text/javascript' src='{% static 'peerDefine/js/knockout-3.4.2.js' %}'></script>
+
+        <!-- Master CSS FILE  -->
+
+        <link rel="stylesheet" href="{% static 'peerDefine/css/master.css' %}">
+
+        <!-- AUTOCOMPLETE STATIC FILES (SEARCH BAR) -->
+        <link rel="stylesheet" href="{% static 'peerDefine/css/autocompleteDropdown.css' %}">
+
+
+        <script type="text/javascript" src="{% static 'peerDefine/js/typeahead.js' %}"></script>
+
+        <script type="text/javascript" src="{% static 'peerDefine/js/term_search_typeahead.js' %}"></script>
+        <script src="{% static 'peerDefine/js/autocompleteAjax.js' %}"></script>
+        {% block js %}
+        {% endblock %}
+
+        {% block cs %}
+        {% endblock %}
+
+  </head>
+  <body>
+
+    {% block navbar %}
+
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert {% if 'error' in message.tags %}alert-warning{%else %}alert-success{% endif %}" role="alert">{% if 'safe' in message.tags %}{{ message}}{% else %} {{ message }}{% endif %}
+            </div>
+
+            {% endfor %}
+          {% endif %}
+    <nav class = "navbar navbar-default" role="navigation" id="navbar">
+
+      <!-- The navbar dropdown that gets initiated when zoomed in -->
+
+      <div class="container WidthOfNavFoot">
+        <div>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" style="border:none; background-color: transparent;" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+        <a class="navbar-brand mynav" href="{% url 'home' %}">Peer Defined</a>
+
+        <div class="collapse navbar-collapse nav pull-right" id='myNavbar'>
+
+        <ul class="nav navbar-nav navbar-right">
+
+          {% if user.is_authenticated %}
+          {% if request.path != "/" %}
+
+          <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="input-group text-center">
+          <form action="{% url 'terms:term_search_list_view' %}" method="get" accept-charset="utf-8" autocomplete="off">
+            <input id="terms" name="q" class="navSearchBar" placeholder="Search Term" type='text'>
+            <button type="submit" class="btn-stripped">
+   <span class="glyphicon glyphicon-search"></span>
+</button>
+
+          </form>
+           </div>
+          </div>
+        </li>
+        {% endif %}
+          <li><a href="{% url 'terms:all' %}">
+            <span class="glyphicon glyphicon-th-list">
+          </span>
+      </a>
+    </li>
+          <li>
+            <a href="/accounts/settings">
+            <span class="glyphicon glyphicon-user"></span>
+            <sup><small><span style="right:5px; font-size:8px" class="glyphicon glyphicon-cog"></span></small></sup>
+          </a>
+        </li>
+          <li><a style="" href="{% url 'accounts:logout' %}">
+            <span class="glyphicon glyphicon-log-out">
+            </span>
+        </a>
+      </li>
+
+          {% else %}
+          {% if request.path != "/" %}
+
+          <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span></a>
+
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="input-group text-center">
+          <form action="{% url 'terms:term_search_list_view' %}" method="get" accept-charset="utf-8" autocomplete="off">
+            <input id="terms" name="q" class="navSearchBar" placeholder="Search Term" type='text'>
+            <button type="submit" class="btn-stripped">
+   <span class="glyphicon glyphicon-search"></span>
+</button>
+
+          </form>
+
+           </div>
+          </div></li>
+        {% endif %}
+          <li><a href="{% url 'terms:all' %}">Terms</a></li>
+          <li><a href="{% url 'accounts:login' %}">Login</a></li>
+          <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
+          {% endif %}
+        </ul>
+
+      </div>
+      <div class="containerz">
+      <ul class="nav navbar-right pull-right navbar-link" style="margin-top: 6px;">
+        {% if user.is_authenticated %}
+        {% load notifications_tags %}
+
+        <li class="dropdown">
+        <a href="#" style="background-color: transparent !important;" class="dropdown-toggle not-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+          <span class='glyphicon glyphicon-bell' aria-hidden="true"></span>
+          {% notifications_unread as nots_un %}
+          {% if nots_un > 0 %}
+          <small><span class="badge badge-notify">{% notifications_unread %}</span></small>
+          {% endif %}
+        </a>
+        <ul class="dropdown-menu" role="menu" id='not_ddown'>
+
+        </ul>
+      </li>
+      {% endif %}
+      </ul>
+       </div>
+    </nav>
+
+            <div id='notificationsLoader'>
+
+            </div>
+    <div class="container WidthOfAll">
+      {% block content %}
+      {% endblock %}
+    </div>
+<!-- <canvas id="canvas"></canvas> -->
+
+{% include "notifications/notifications_ajax.html" %}
+
+
+{% endblock %}
+
+{% block footer %}
+
+<footer class="footer">
+<div class="container WidthOfNavFoot">
+  <h5 class="inlineblock">Peer Defined 2018 </h5>
+  <h5 style="float: right;" class="inlineblock navbar-link"><a style="text-decoration: none;" href="{% url 'aboutus' %}">About Us</a> </h5>
+</div>
+</footer>
+
+{% endblock %}
+  </body>
+
+</html>

@@ -1,0 +1,36 @@
+<!--
+ADAPTED FROM:
+Author: Username Rob L.
+Date: Jan 2 2018
+Source: https://stackoverflow.com/questions/30864011/display-only-some-of-the-page-numbers-by-django-pagination/30864681
+-->
+
+<!-- APPLIES TO DEFINITIONS LIST -->
+
+{% if not is_paginated %}
+<div class="col-md-12 text-center" id="pageNumbers">
+<ul class="pagination">
+
+
+  <li id="list_btn_prev"><a href="javascript:prevPage()" id="btn_prev"><p class="arrowFont">&#9664;</p></a></li>
+
+  <li id="list_btn_next"><a href="javascript:nextPage()" id="btn_next"><p class="arrowFont">&#9654;</p></a></li>
+
+
+</ul>
+
+</div>
+
+
+<script>
+
+{% for i in page_obj.paginator.page_range %}
+  {% if page_obj.number == i %}
+      <li class="active"><span>{{ i }}</span></li>
+  {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+  {% endif %}
+{% endfor %}
+</script>
+
+{% endif %}

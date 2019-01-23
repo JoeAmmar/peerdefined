@@ -1,0 +1,103 @@
+<!-- This code file handles favoriting (following) definitions and terms -->
+
+<script>
+
+// Favorite (follow) definitions function
+function favorite(pk){
+    pk = pk
+    starClass = "favorite" + pk //important for updating a star (filled/unfilled) corresponding to a definition
+    $.ajax({
+      type: "POST",
+      url: "/definitions/" + pk + "/follow",
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      },
+      async: false,
+      success: function(data){
+        //uncomment the following two lines for testing purposes
+        //console.log(data.usersLike)
+        //console.log($(this))
+
+        // THIS SECTION IS SPECIFIC TO USER SETTINGS FAVORITES (FOLLOW) PAGE
+        {% if "accounts/settings/bookmarks/" in request.path %}
+        star = document.getElementsByClassName(starClass) //important for updating a star (filled/unfilled)
+        starStringForJquery = "." + starClass + " span" //used for jquery (anchor)
+        // If user is in favorites (follow) list currently, fill up the star
+        if (data.usersLike.includes("{{user}}") == true) {
+        star[0].childNodes[1].childNodes[1].classList.remove("glyphicon-star-empty")
+        star[0].childNodes[1].childNodes[1].classList.add("glyphicon-star")
+        $(starStringForJquery).attr('title',"Unbookmark this definition")
+      } else{
+        // If user is not in favorites (follow) list currently, empty the star
+        star[0].childNodes[1].childNodes[1].classList.remove("glyphicon-star")
+        star[0].childNodes[1].childNodes[1].classList.add("glyphicon-star-empty")
+        $(starStringForJquery).attr('title',"Bookmark this definition to get updates on changes")
+      }
+        {% else %}
+
+        // THIS SECTION IS SPECIFIC TO DEFINITIONS LIST PAGE
+
+        star = document.getElementsByClassName(starClass) //important for updating a star (filled/unfilled)
+        starStringForJquery = "." + starClass + " a" //used for jquery (anchor)
+          // If user is in favorites (follow) list currently, fill up the star
+        if (data.usersLike.includes("{{user}}") == true) {
+        star[0].childNodes[0].childNodes[0].classList.remove("glyphicon-star-empty")
+        star[0].childNodes[0].childNodes[0].classList.add("glyphicon-star")
+        $(starStringForJquery).attr('title',"Unbookmark this definition")
+      } else{
+          // If user is not in favorites (follow) list currently, empty the star
+        star[0].childNodes[0].childNodes[0].classList.remove("glyphicon-star")
+        star[0].childNodes[0].childNodes[0].classList.add("glyphicon-star-empty")
+        $(starStringForJquery).attr('title',"Bookmark this definition to get updates on changes")
+      }
+      {% endif %}
+      }
+    })};
+
+// Favorite (follow) terms function
+    function favoriteTerm(pk){
+        pk = pk
+        // THIS IS SPECIFIC TO USER SETTINGS FAVORITES (FOLLOW) PAGE
+        {% if "accounts/settings/bookmarks/" in request.path %}
+        starClass = "favoriteTermFollow" + pk
+        starStringForJquery = "#" + starClass + " span" //used for jquery (anchor)
+        {% else %}
+        // THIS IS SPECIFIC TO DEFINITIONS PAGE
+        starClass = "favoriteTermFollow"  //important for updating a star (filled/unfilled)
+        starStringForJquery = "#" + starClass + " span"
+        {% endif %}
+        $.ajax({
+          type: "POST",
+          url: "/terms/" + pk + "/follow",
+          data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          async: false,
+          success: function(data){
+            // console.log(data.usersLike)
+            // console.log($(this))
+            starTerm = document.getElementById(starClass)  //important for updating a star (filled/unfilled)
+            if (data.usersLike.includes("{{user}}") == true) {
+            // If user is in favorites (follow) list currently, fill the star
+            starTerm.childNodes[1].classList.remove("glyphicon-star-empty")
+            starTerm.childNodes[1].classList.add("glyphicon-star")
+            $(starStringForJquery).attr('title',"Unbookmark this term")
+            {% if "accounts/settings/bookmarks/" in request.path %}
+            {% else %}
+            $(".panel-title.pull-left a").attr("style","display:none;")
+            {% endif %}
+          } else{
+            // If user is not in favorites (follow) list currently, empty the star
+            starTerm.childNodes[1].classList.remove("glyphicon-star")
+            starTerm.childNodes[1].classList.add("glyphicon-star-empty")
+            $(starStringForJquery).attr('title',"Bookmark this term to get updates on changes")
+            {% if "accounts/settings/bookmarks/" in request.path %}
+            {% else %}
+            $(".panel-title.pull-left a").attr("style","display:block;")
+            {% endif %}
+          }
+          }
+        })};
+
+
+</script>

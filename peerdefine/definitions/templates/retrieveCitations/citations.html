@@ -1,0 +1,522 @@
+<script>
+  // needs additional commenting
+  // modal.html in retrieveCitations folder has relevant code
+  // every time modal is opened flag is set to false and num is set to 0
+
+
+  // Last value functions (retrieve last value of array/String)
+
+  Array.prototype.last = function() {
+    return this[this.length - 1];
+  };
+  String.prototype.last = function() {
+    return this[this.length - 1];
+  }
+
+
+// FUNCTION FOR FORMATTING AUTHOR META-DATA TO APA CITATION FOR REFERENCE SECTION:
+/////////////////////////    FUNCTION START    /////////////////////////////////
+
+function referenceAuthor(){
+var fullCitation = ''
+
+for (var i = 0; i < authorList.length; i++) {
+  aut = authorList[i]
+
+  // Logic for article with more than 7 authors (per APA format)
+    // this section applies to the 6th author (adds "..." at the end of 6th author; [a1, a2, a3, a4, a5, a6 ... alast])
+  if (authorList.length > 7 && authorList[5] == aut) {
+    // logic to properly place initials depending on how many the author has
+    if (aut.split(" ").length == 1) {
+      fullCitation += aut.split(" ").last() + ",..."
+    } else if (aut.split(" ").length == 2) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ".,..."
+    } else if (aut.split(" ").length == 3) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] +
+        ". " + aut.split(" ")[1][0] + ".,..."
+    } else if (aut.split(" ").length == 4) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " +
+        aut.split(" ")[1][0] + ". " +
+        aut.split(" ")[2][0] + ".,..."
+    } else if (aut.split(" ").length == 5) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " + aut.split()[1][0] + ". " + aut.split(" ")[2][0] + ". " + aut.split(" ")[3][0] + ".,..."
+    }
+
+  // inputs information for the final author
+    if (authorList.last().split(" ").length == 1) {
+      fullCitation += authorList.last().split(" ").last() + " "
+    } else if (authorList.last().split(" ").length == 2) {
+      fullCitation += authorList.last().split(" ").last() + ", " +
+        authorList.last().split(" ")[0][0] + ". "
+    } else if (authorList.last().split(" ").length == 3) {
+      fullCitation += authorList.last().split(" ").last() + ", " + authorList.last().split(" ")[
+        0][0] + ". " + authorList.last().split(" ")[1][0] + ". "
+    } else if (authorList.last().split(" ").length == 4) {
+      fullCitation += authorList.last().split(" ").last() + ", " + authorList.last().split(" ")[0][0] + ". " +
+        authorList.last().split(" ")[1][0] + ". " +
+        authorList.last().split(" ")[2][0] + ". "
+    } else if (authorList.last().split(" ").length == 5) {
+      fullCitation += authorList.last().split(" ").last() + ", " + authorList.last().split(" ")[0][0] + ". " + authorList.last().split(" ")[
+        1][0] + ". " + authorList.last().split(" ")[2][0] + ". " + authorList.last().split(" ")[3][0] + ". "
+    }
+    break;
+
+    // logic below applies if
+      // citation has < 7 authors and current author is not final author in loop...
+      // OR if citation has only one author
+    // formats the last name and initials for each author
+    //
+  } else if (authorList.last() != aut || authorList.length == 1) {
+    if (aut.split(" ").length == 1) {
+      fullCitation += aut.split(" ").last()
+    } else if (aut.split(" ").length == 2) {
+      fullCitation += aut.split(" ").last() + ", " +
+        aut.split(" ")[0][0] + "."
+    } else if (aut.split(" ").length == 3) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] +
+        ". " + aut.split(" ")[1][0] + "."
+    } else if (aut.split(" ").length == 4) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " +
+        aut.split(" ")[1][0] + ". " +
+        aut.split(" ")[2][0] + "."
+    } else if (aut.split(" ").length == 5) {
+      fullCitation += aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " + aut.split()[1][0] + ". " + aut.split(" ")[2][0] + ". " + aut.split(" ")[3][0] + "."
+    }
+
+    // If citation has only one author, add a space intead of a comma
+    if (authorList.length == 1) {
+      fullCitation += ' '
+    } else {
+      fullCitation += ', '
+    }
+    // logic below applies to last author in citation (for < 7 authors)
+  } else {
+    if (aut.split(" ").length == 1) {
+      fullCitation += "& " + aut.split(" ").last() + " "
+    } else if (aut.split(" ").length == 2) {
+      fullCitation += "& " + aut.split(" ").last() + ", " +
+        aut.split(" ")[0][0] + ". "
+    } else if (aut.split(" ").length == 3) {
+      fullCitation += "& " + aut.split(" ").last() + ", " + aut.split(" ")[0][0] +
+        ". " + aut.split(" ")[1][0] + ". "
+    } else if (aut.split(" ").length == 4) {
+      fullCitation += "& " + aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " +
+        aut.split(" ")[1][0] + ". " +
+        aut.split(" ")[2][0] + ". "
+    } else if (aut.split(" ").length == 5) {
+      fullCitation += "& " + aut.split(" ").last() + ", " + aut.split(" ")[0][0] + ". " + aut.split()[1][0] + ". " + aut.split(" ")[2][0] + ". " + aut.split(" ")[3][0] + ". "
+    }
+  }
+};
+return fullCitation;
+};
+
+///////////////////////////// Function End  //////////////////////////////
+
+
+  // num refers to how many times Microsoft API request is sent (on single search)
+  var num = 0;
+  // flag == true means that Microsoft Academic API failed to interpret search query
+  var flag = false;
+
+  // query user inputs to search
+  var searchedValue = $('#citationInput').val();
+
+  // Code run upon submitting search (enter or clicking button)
+  $('#citationSubmit').click(function(event) {
+    var searchedValue = $('#citationInput').val(); //might be redundant
+    var searchType = $('#searchType').val();
+    // if search type is title and microsoft search did not already fail (flag != true) and number of times searched is less than 1
+    // note number of times searched and flag variable reset after closing and re-opening modal
+    if (searchType == 'title' && num < 1 && flag != true) {
+
+      // prevents default click action (might not influence anything here)
+      event.preventDefault();
+
+      // ajax  (Microsoft API article search)
+      var raw = $.ajax({
+        type: "POST",
+        url: "{% url 'definitions:citation_search' %}",
+        data: {
+          qry: searchedValue,
+          searchType: searchType,
+          csrfmiddlewaretoken: "{{ csrf_token }}",
+        },
+        async: false,
+        success: function(data) {
+
+          // If Microsoft API can succesfully interpret search query, extract meta-data
+          if (data.flag !== "True") {
+            dataResults = data.responseText
+            //console.log(data.responseText)
+            evalClean = dataResults['entities'][0]
+            authors = evalClean['AA']
+            title = evalClean['DN']
+            year = evalClean['Y']
+            journal = evalClean['VFN']
+            volume = evalClean['V']
+            issue = evalClean['I']
+            firstPage = evalClean['FP']
+            lastPage = evalClean['LP']
+            citations = evalClean['CC']
+            doi = JSON.parse(evalClean['E'])['DOI']
+
+            // set value for 'year' input box based on article meta-data
+            var yearForm = $('#id_year');
+            yearForm.val(year)
+
+            // set value for citation count input box based on article meta-data
+            var citationCountForm = $('#id_citeNumber');
+            citationCountForm.val(citations);
+
+            // retrieve list of authors
+            authorsLen = authors.length;
+            authorList = []
+            for (var i = 0; i < authorsLen; i++) {
+              authorList.push(authors[i]['DAuN'])
+            };
+
+
+            //Getting in-text citation formatting set up then assigning to in-text input value in form
+            // In-text String variable
+            var inTextList = ""
+            // Formatting based on 1 author
+            if (authorList.length == 1) {
+              inTextList += authorList[0].split(" ").last().concat(", ")
+              inTextList += year
+
+            // Formatting based on 2 authors
+            }else if (authorList.length == 2) {
+              inTextList += authorList[0].split(" ").last().concat(" & ") +
+                authorList[1].split(" ").last().concat(", ")
+              inTextList += year
+            } else if (authorList.length < 6) {
+              inTextList += authorList[0].split(" ").last().concat(", ")
+              for (var i = 1; i < authorList.length; i++) {
+                inTextList += authorList[i].split(" ").last().concat(", ")
+              }
+              inTextList += year
+            } else {
+              inTextList += authorList[0].split(" ").last() +
+                " et al., " + year
+            };
+
+            // Setting in-text input value in form to formatted in-text citation
+            var inTextForm = $('#id_author-0-in_text');
+            inTextForm.val(inTextList)
+
+
+            // Code For Creating full APA Citation (for reference section)
+            // This is specific to articles, not books or other media
+
+            fullCitation = ''
+            fullCitation += referenceAuthor();
+
+            // Formats title to match APA style (Capitalize after colon)
+            formatTitle = ''
+            titleChars = title.split("")
+            titleIndex = -1
+            if (title.search('\\:') != -1) {
+              titleIndex = title.search('\\:')
+            }
+            if (titleIndex != -1) {
+              if (titleChars[titleIndex + 1] != ' ') {
+                titleChars[titleIndex + 1] = titleChars[titleIndex + 1].toUpperCase()
+              } else if (titleChars[titleIndex + 2] != ' ') {
+                titleChars[titleIndex + 2] = titleChars[titleIndex + 2].toUpperCase()
+              }
+            };
+            formatTitle = titleChars.join("")
+
+
+
+
+            // Adding title information to citation
+            fullCitation += "(" + year + "). " + formatTitle
+            if (title.last() != '.') {
+              fullCitation += '.'
+            } else {
+              fullCitation += ''
+            }
+
+            // Adding jounal title, volume, and range of pages
+            if (journal != "") {
+              fullCitation += ' ' + journal + ', '
+            }
+
+            if (volume) {
+              fullCitation += volume + ', '
+            }
+
+            if (firstPage) {
+              fullCitation += firstPage + '-'
+            }
+
+            if (lastPage) {
+              fullCitation += lastPage + "."
+            }
+
+            if (doi) {
+              fullCitation += " doi\:" + doi
+            }
+
+            // Assigning Citation Input Value in Definitions Form
+            var citationForm = $('#id_author-0-citation');
+            citationForm.val(fullCitation)
+
+            // Alerting user of success and hiding modal!
+            alert("Citation Meta-Data Retrieved Succesfully!");
+            modal.style.display = "none";
+
+          // Summary of below code: if Microsoft search fails, resubmit search with crossReff
+          // Logic below applies if Microsoft API has issues interpretting search query (flag == "True")
+          // num refers to the number of times the API has been called (only one time allowed)
+          } else if (data.flag === "True" && num < 1) {
+            flag = true;
+            $('#citationSubmit').click()
+            num += 1
+          }
+
+
+
+
+        }
+
+
+      }) // WHERE AJAX REQUEST ENDS
+
+    } // WHERE IF REQUEST == TITLE ENDS
+
+    // If Microsoft search fails or user specifies a DOI search, search using Crossref
+    if (flag == true || $('#searchType').val() == 'doi') {
+
+      var searchedValue = $('#citationInput').val();
+
+// If '/' in user search (meaning it's a DOI search), then use 'https://api.crossref.org/v1/works/' link
+      var crossSite = ''
+      var rows = ''
+      if (searchedValue.search('/') != -1) {
+        crossSite = 'https://api.crossref.org/works/'
+        searchedValue = searchedValue.trim()
+        rows = ''
+      } else {
+        // If '/' not in user search (meaning it's NOT a DOI search), then use 'https://api.crossref.org/works?query=' link
+        // rows refers to the number of citation returned from the search (default is 1)
+        crossSite = 'https://api.crossref.org/works?query='
+        rows = "&rows=1"
+      }
+
+      //retrieve json from the link (based on search)
+       evalTest = $.getJSON(crossSite + searchedValue + rows,
+        function(json) {
+          if (rows == "&rows=1") {
+            //logic to retrieve data if it's NOT doi search
+            evalClean = JSON.parse(evalTest['responseText'])['message']['items'][0]
+          } else {
+            //logic to retrieve data if it IS a doi search
+            evalClean = JSON.parse(evalTest['responseText'])['message']
+          }
+
+
+
+
+          // extracting article meta-data
+          authors = evalClean['author']
+          title = evalClean['title']
+          publisher = evalClean['publisher']
+          publishLocation = evalClean['publisher-location']
+          page = evalClean['page']
+          doi = evalClean['DOI']
+          type = evalClean['type']
+          volume = evalClean['volume']
+          citations = evalClean['is-referenced-by-count']
+          journal = evalClean['container-title'] // Might also be a book title
+
+          //setting up year based on whether publication was online or in print (needed extracting data correctly)
+
+          year = ''
+
+          if (evalClean['published-online']) {
+            year = evalClean['published-online']['date-parts'][0][0]
+          } else if (evalClean['published-print']) {
+            year = evalClean['published-print']['date-parts'][0][0]
+          }
+
+
+          //assigning year input in form to extracted value
+          var yearForm = $('#id_year');
+          yearForm.val(year)
+
+          //assigning citation number input in form to extracted value
+          var citationCountForm = $('#id_citeNumber');
+          citationCountForm.val(citations);
+
+          // create list of authors
+          authorsLen = authors.length;
+          authorList = []
+          for (var i = 0; i < authorsLen; i++) {
+            authConcat = authors[i]['given'] + " " + authors[i]['family']
+            authorList.push(authConcat)
+          };
+
+          // Create in-text citation
+          var inTextList = ""
+          // Formatting based on 1 author
+          if (authorList.length == 1) {
+            inTextList += authorList[0].split(" ").last().concat(", ")
+            inTextList += year
+
+          // Formatting based on 2 authors
+          }else if (authorList.length == 2) {
+            inTextList += authorList[0].split(" ").last().concat(" & ") +
+              authorList[1].split(" ").last().concat(", ")
+            inTextList += year
+          // formatting based on 5 authors or less
+          } else if (authorList.length < 6) {
+            inTextList += authorList[0].split(" ").last().concat(", ")
+            for (var i = 1; i < authorList.length - 1; i++) {
+              inTextList += authorList[i].split(" ").last().concat(", ")
+            }
+            inTextList += "& " + authorList[authorList.length - 1].split(" ").last().concat(", ")
+            inTextList += year
+            // formatting based on 6 or more authors
+          } else {
+            inTextList += authorList[0].split(" ").last() +
+              " et al., " + year
+          };
+
+          //assigning in-text citation input in form to extracted value
+          var inTextForm = $('#id_author-0-in_text');
+          inTextForm.val(inTextList)
+
+          // Nifty cross-ref apa citation retrieval (not in their API's documentation)
+
+
+            retrieveFullCitation = $.getJSON('https://api.crossref.org/works/' + doi + '/transform/text/x-bibliography',
+            setTimeout(function(){fullCitation = retrieveFullCitation['responseText'].trim();}, 1000))
+
+
+          // If apa citation retrieval from cross-ref API is taken out
+          if(typeof fullCitation !== 'undefined'){
+          }
+          else {
+
+          // Logic for Reference Section Citation (APA style)
+          fullCitation = ''
+
+          //htmlCitation is for possible future formatting (Look for way to save formatting for future reference)
+          htmlCitation = ''
+          fullCitation += referenceAuthor();
+
+          // Formats title to match APA style (Capitalize after colon)
+          title = title.toString() // this line is specific to this section
+          formatTitle = ''
+          titleChars = title.split("")
+          titleIndex = -1
+          if (title.search('\\:') != -1) {
+            titleIndex = title.search('\\:')
+          }
+          if (titleIndex != -1) {
+            if (titleChars[titleIndex + 1] != ' ') {
+              titleChars[titleIndex + 1] = titleChars[titleIndex + 1].toUpperCase()
+            } else if (titleChars[titleIndex + 2] != ' ') {
+              titleChars[titleIndex + 2] = titleChars[titleIndex + 2].toUpperCase()
+            }
+          };
+          formatTitle = titleChars.join("") //make title characters into String
+
+
+
+
+          // Adding title information to citation (html formatting... add later)
+          htmlCitation = "<p>" + fullCitation
+
+          // FORMATTING SPECIFIC FOR BOOK CHAPTER OR BOOK
+          if (type == 'book-chapter' || type == 'book') {
+            fullCitation += "(" + year + "). " + formatTitle
+            htmlCitation += "(" + year + "). " + "<i>" + formatTitle + "</i>"
+            if (title[-1] != '.') {
+              fullCitation += '.'
+              htmlCitation += '.'
+            } else {
+              fullCitation += ''
+            }
+
+            // add publish location if available
+            if (typeof publishLocation !== 'undefined' && publishLocation && (type == 'book-chapter' || type == 'book')) {
+              fullCitation += " " + publishLocation + ": "
+              htmlCitation += " " + publishLocation + ": "
+            }
+
+            // add publisher if available
+
+            if (typeof publisher !== 'undefined' && publisher && (type == 'book-chapter' || type == 'book')) {
+              fullCitation += publisher
+              htmlCitation += publisher
+            }
+
+            // add volume if available
+
+            if (typeof volume !== 'undefined' && volume) {
+              fullCitation += volume + ', '
+              htmlCitation += volume + ', '
+            }
+
+            // add pages if available
+
+            if (typeof page !== 'undefined' && page) {
+              fullCitation += page + "."
+              htmlCitation += page + "."
+            }
+          } else { // FORMATTING SPECIFIC FOR NON-BOOK CHAPTER AND NON-BOOK
+            fullCitation += "(" + year + "). " + formatTitle
+            htmlCitation += "(" + year + "). " + formatTitle
+            //add period if citation does not contain period or ! or ? at end
+            if (title.last() != '.' && title.last() != '!' && title.last() != '?') {
+              fullCitation += '.'
+              htmlCitation += '.'
+            } else {
+              fullCitation += ''
+            }
+
+            // Adding jounal title, volume, and range of pages
+            if (typeof journal !== 'undefined' && journal != "") {
+              fullCitation += ' ' + journal + ', '
+              htmlCitation += ' ' + "<i>" + journal + "</i>" + ', '
+            }
+            // adding volume if available
+            if (typeof volume !== 'undefined' && volume) {
+              fullCitation += volume + ', '
+              htmlCitation += "<i>" + volume + "</i>" + ', '
+            }
+            // adding pages if available
+            if (typeof page !== 'undefined' && page) {
+              fullCitation += page + "."
+              htmlCitation += page + "."
+            }
+            // adding doi if available and citation not of type chapter or book
+            if (typeof doi !== 'undefined' && doi && type != 'book-chapter' && type != 'book') {
+              fullCitation += " doi\:" + doi
+              htmlCitation += " doi\:" + doi
+            }
+          }
+          htmlCitation += "</p>"
+        }
+          // assigning value to citation form text-box and adding alert for succesful retrieval
+          var citationForm = $('#id_author-0-citation');
+          citationForm.val(fullCitation)
+          alert("Citation Meta-Data Retrieved Succesfully!");
+
+          // hide article search modal
+          modal.style.display = "none";
+        });
+
+      // alert if search results return nothing (rare)
+      if (evalTest['responseText'] == "Resource not found.") {
+        alert("Could not retrieve citation information");
+        modal.style.display = "none";
+      }
+
+    }
+  });
+</script>

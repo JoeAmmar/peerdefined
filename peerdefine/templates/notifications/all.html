@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+<!-- Template Tag made to extract Term ID and Term Slug from notification description -->
+{% load extract_id_slug_tag %}
+{% block content %}
+{% load notifications_tags %}
+
+<!-- Delete all notifications -->
+<center><h1>Notifications</h1>
+  {% if notifications %}
+  <h3>Clear All <a id="delete_all" href="{% url 'delete_all_notifications' %}"><span class="glyphicon glyphicon-trash" style='color:orangered;'></span></a>
+  </h3>
+  {% endif %}
+</center>
+
+{% if notifications %}
+<script>
+  // Prompt user if they're sure they want to delete all notifications
+  // the following script adapted from:
+  // https://stackoverflow.com/questions/37398416/django-delete-confirmation
+  // author: dotcomly
+  // date: May 23 '16 at 19:06
+  $(document).on('click', '#delete_all', function(){
+    return confirm('Warning: Once you clear notifications, you cannot get them back. Confirm?');
+})
+</script>
+{% endif %}
+
+<br><br>
+
+{% if notifications %}
+
+
+<div class='row'>
+<div class="">
+<table class='table'>
+{% for note in notifications %}
+
+<tr>{% if request.user.is_superuser or request.user == note.recipient %}
+{% if note.description %}
+{% if note.description|length > 10 %}
+<td><a href="{% url 'definitions:term_single' termSlug=note.description|id_term_tag:"slug" %}">{{ note.verb }}</a></td>
+{% else %}
+<td><a href="{% url 'definitions:definition_history' pk=note.description|id_term_tag:"id" %}">{{ note.verb}}</a></td>
+{% endif %}
+<td><a href={% url 'notifications:delete' slug=note.slug %}>Delete</a></td>
+{% else %}
+<td>{{ note.verb }}</td>
+{% endif %}
+{% endif %}
+<td>{{note.timestamp|date:"F jS Y h:i A"}}</td></tr>
+{% endfor %}
+</table>
+
+</div>
+</div>
+
+{% else %}
+
+<p class='lead'>
+You have no new notifications.
+</p>
+
+{% endif %}
+{% endblock %}

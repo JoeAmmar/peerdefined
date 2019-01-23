@@ -1,0 +1,19 @@
+{% extends "definitions/definition_base.html" %}
+
+{% block predefinition %}
+
+<div class="col-md-4">
+<h1>@{{definition_user.username}}</h1>
+</div>
+
+{% endblock %}
+
+{% block definition_content %}
+<div class="col-md-8">
+
+{% for definition in definition_list %}
+{% include "definitions/_definition.html" %}
+
+{% endfor %}
+</div>
+{% endblock %}

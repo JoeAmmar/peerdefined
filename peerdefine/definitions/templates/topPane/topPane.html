@@ -1,0 +1,53 @@
+<!-- THIS TEMPLATE IS SPECIFIC TO THE PANE CONTAINING DEFINITION FILTER, PAGINATION, TIMELINE, AND CLIPBOARD -->
+
+{% if definition_list.count > 0 %}
+
+<div class="inlineblock pull-right TopPanePadding">
+<a href="#" class="pull-right" id="selectAllDefs" title="Select all definitions" style="text-decoration: none;" role="button" onclick="checkAllDefs()" aria-expanded="false"><h1>&#10003;</h1></a>
+<a href="#" class="pull-right checkMark2" title="Select all definitions" style="text-decoration: none;"  onclick="checkAllDefs()" aria-expanded="false"><h4 style="line-height:48px; width:22px; text-align: center; text-decoration: none; filter: brightness(80%);">&#10003;</h3></a>
+</div>
+
+<a href="#" style="text-decoration: none;" class="pull-right TopPanePadding" id="citationClipboard" onclick="citationClipboardFunction(this)" type="button" value="Clipboard" title="Copy selected citations to clipboard">
+  <h1>
+    &#128203;
+  </h1>
+</a>
+<a href="#" class="showTimeline pull-right TopPanePadding" role="button" title="View timeline of definitions" onclick="timelineClickFunction(this)" aria-expanded="false" style="text-decoration: none;"><h1>&#128467;</h1></a>
+<div class="inlineblock pull-right">
+<a href="#" class="hideTimeline pull-right" title="Hide timeline" style="text-decoration: none; display: none;" role="button" onclick="revertFunction(this)" aria-expanded="false"><h1>&#128467;</h1></a>
+<a href="#" class="hideTimelineX pull-right" style="text-decoration: none; display: none;" role="button" onclick="revertFunction(this)" aria-expanded="false"><h4 style="line-height:65px; width:37px; text-align: center; text-decoration: none; filter: brightness(80%);">&#x274C;</h3></a>
+</div>
+<a href="#dropDownFilter" style="text-decoration: none;" class="filterDisc pull-right" role="button" title="Filter definitions by discipline" data-toggle="collapse" aria-expanded="false"><h1>&#128450;</h1></a>
+<br>
+{% if definition_list.count > 5 %}
+<div class="" style="margin-bottom:0%;">
+<h4>Show <select id='definitionsPerPage' onchange="changePaginate(this)">
+  <option value="10"> </option>
+</select> Items Per Page</h4>
+</div>
+{% else %}
+<br><br>
+{% endif %}
+
+<div class="collapse panel panel-default" style="margin-bottom: 5px;" id="dropDownFilter">
+  <div class="panel-heading">
+    <b>Filter Definitions By Discipline(s)</b>
+  </div>
+  <div class="panel-heading">
+<div class="panel-body" id="definitionsFilterPanel">
+<div class="hideUntilClick" id='hideUntilClick'>
+  <ul id='filterDiscList'
+  style="list-style-type: none;
+
+    -webkit-columns: 3;
+    -moz-columns: 3;
+    columns: 3;"
+   data-columns="3">
+    <li><input type="checkbox" name="" value="" id="selectAll" onclick="selectAllDisc()" onclick="selectAllDisc()"><label for="selectAll"><span>Select All</span></label>
+    </li>
+  </ul>
+</div>
+</div>
+</div>
+</div>
+{% endif %}

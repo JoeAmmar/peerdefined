@@ -1,0 +1,366 @@
+<!--
+ Code adapted from: https://codepen.io/tutsplus/pen/ZKpNwm
+ Author: Envato Tuts+ (George Martsoukos)
+ Created: April 25, 2017
+ Updated: April 27, 2017
+-->
+
+<div class="timelinehide" style="display: none;">
+<section class="section intro">
+  <div class="container">
+  </div>
+</section>
+
+<section class="timeline">
+  <ol class="showTimeline23">
+    <li class="hifirst"></li>
+  </ol>
+<br>
+  <div class="arrows">
+    <button class="arrow arrow__prev disabled" disabled>
+      <h1 alt="prev timeline arrow" style="font-size:90px;">&#8668;</h1>
+    </button>
+    <button class="arrow arrow__next disabled" disabled>
+      <h1 alt="next timeline arrow" style="font-size:90px;">&#8669;</h1>
+    </button>
+  </div>
+
+</section>
+</div>
+
+<!-- CSS RELEVANT TO TIMELINE -->
+{% include "timeline/timeline_css.html" %}
+
+
+
+<script type="text/javascript">
+//Now that pagination is done using javascript, this ajax request may be unneeded
+//update this code file in the near future
+
+ajaxRequest = (function(){
+    var ajaxRan = true; //Lazy logic to make sure this request is run only once (is set to FALSE later)
+  $(".showTimeline").click(function(e){
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      //Code changes depending on whether on related-disciplines definitions page or related-synonyms definitions page
+      {% if '/definitions/discipline/' in request.build_absolute_uri or '/definitions/synonyms/' in request.build_absolute_uri  %}
+      {% if '/definitions/synonyms/' in request.build_absolute_uri  %}
+      url: "{% url 'definitions:get_all_definitions_syn' synSlug %}",
+      {% endif %}
+      {% if '/definitions/discipline/' in request.build_absolute_uri  %}
+      url: "{% url 'definitions:get_all_definitions_disc' discSlug %}",
+      {% endif %}
+      {% else %}
+      //used for regular definitions page
+      url: "{% url 'definitions:get_all_definitions' termSlug=definition_list.0.term.slug %}",
+      {% endif %}
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      },
+      async: false,
+      success: function(data){
+        if (ajaxRan) {
+        dataResults = data.results
+      //  console.log(data) //// uncomment for testing
+
+      //First element dealt with seperately because formatting breaks unless this is done
+        firstElement = dataResults.shift()
+        $(".hifirst")[0].innerHTML = "<div><time>" + firstElement[1] + "</time>" + limiter("" + firstElement[2]) + "</div>";
+        $(dataResults).each(function(){
+          var link = this;
+          link[2] = limiter(""+link[2])
+        $(".showTimeline23").append("<li><div><time>" + link[1]+ "</time>" + link[2] + "</div></li>");
+        timeLineFunc();
+        adjustArrows();
+        ajaxRan = false;
+      })}
+              },
+      error: function(rs, e) {
+        console.log(rs);
+        console.log(e);
+      }
+
+    })
+
+  })
+})();
+
+
+
+
+
+</script>
+
+<script type="text/javascript">
+
+  //   //   //   //   //   //   //   //   //   //   //   //
+  //   //   //   // TIMELINE CODE    //   //   //   //   //
+  //   //   //   //   //   //   //   //   //   //   //   //
+
+counter = 0;
+var timeLineFunc = (function timeLineFunc() {
+
+  // VARIABLES
+  timeline = document.querySelector(".timeline ol"),
+    elH = document.querySelectorAll(".timeline li > div"),
+    arrows = document.querySelectorAll(".timeline .arrows .arrow"),
+    arrowPrev = document.querySelector(".timeline .arrows .arrow__prev"),
+    arrowNext = document.querySelector(".timeline .arrows .arrow__next"),
+    firstItem = document.querySelector(".timeline li:first-child"),
+    lastItem = document.querySelector(".timeline li:last-child"),
+    xScrolling = 700,
+    disabledClass = "disabled";
+
+
+  // START
+  window.addEventListener("load", init);
+
+  function init() {
+    //console.log(lastItem)
+    setEqualHeights(elH);
+    animateTl(xScrolling, arrows, timeline);
+    setSwipeFn(timeline, arrowPrev, arrowNext);
+    setKeyboardFn(arrowPrev, arrowNext);
+  }
+
+  // SET EQUAL HEIGHTS
+  function setEqualHeights(el) {
+    let counter = 0;
+    for (let i = 0; i < el.length; i++) {
+      const singleHeight = el[i].offsetHeight;
+
+      if (counter < singleHeight) {
+        counter = singleHeight;
+      }
+    }
+
+    for (let i = 0; i < el.length; i++) {
+      el[i].style.height = `${counter}px`;
+    }
+  }
+
+  // CHECK IF AN ELEMENT IS IN VIEWPORT
+  // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
+  function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
+  // SET STATE OF PREV/NEXT ARROWS
+  function setBtnState(el, flag = true) {
+    if (flag) {
+      el.classList.add(disabledClass);
+    } else {
+      if (el.classList.contains(disabledClass)) {
+        el.classList.remove(disabledClass);
+      }
+      el.disabled = false;
+    }
+  }
+
+  // ANIMATE TIMELINE
+  function animateTl(scrolling, el, tl) {
+    let counter = 0;
+    for (let i = 0; i < el.length; i++) {
+      el[i].addEventListener("click", function() {
+        if (!arrowPrev.disabled) {
+          arrowPrev.disabled = true;
+        }
+        if (!arrowNext.disabled) {
+          arrowNext.disabled = true;
+        }
+        const sign = (this.classList.contains("arrow__prev")) ? "" : "-";
+        if (counter === 0) {
+          tl.style.transform = `translateX(-${scrolling}px)`;
+        } else {
+          const tlStyle = getComputedStyle(tl);
+          // add more browser prefixes if needed here
+          const tlTransform = tlStyle.getPropertyValue("-webkit-transform") || tlStyle.getPropertyValue("transform");
+          const values = parseInt(tlTransform.split(",")[4]) + parseInt(`${sign}${scrolling}`);
+          tl.style.transform = `translateX(${values}px)`;
+        }
+
+        setTimeout(() => {
+          isElementInViewport(firstItem) ? setBtnState(arrowPrev) : setBtnState(arrowPrev, false);
+          isElementInViewport(lastItem) ? setBtnState(arrowNext) : setBtnState(arrowNext, false);
+        }, 1700);
+
+        counter++;
+      });
+    }
+  }
+
+  // ADD SWIPE SUPPORT FOR TOUCH DEVICES
+  function setSwipeFn(tl, prev, next) {
+    const hammer = new Hammer(tl);
+    hammer.on("swipeleft", () => next.click());
+    hammer.on("swiperight", () => prev.click());
+  }
+
+  // ADD BASIC KEYBOARD FUNCTIONALITY (left right arrows)
+  function setKeyboardFn(prev, next) {
+    document.addEventListener("keydown", (e) => {
+      if ((e.which === 37) || (e.which === 39)) {
+        const timelineOfTop = timeline.offsetTop;
+        const y = window.pageYOffset;
+        if (timelineOfTop !== y) {
+          window.scrollTo(0, timelineOfTop);
+        }
+        if (e.which === 37) {
+          prev.click();
+        } else if (e.which === 39) {
+          next.click();
+        }
+      }
+    });
+  }
+return timeLineFunc;
+}());
+
+  // Hides all other elements besides timeline
+  function timelineClickFunction(obj){
+  var elementshide = document.getElementsByClassName("hide-until-load");
+  elementshide[0].style.display='none'
+  var pageNumHide = document.getElementById("pageNumbers");
+  pageNumHide.style.display='none'
+  var timelinehide = document.getElementsByClassName("timelinehide");
+  timelinehide[0].style.display=''
+  {% if is_paginated %}
+  var hidepagination = document.getElementsByClassName("col-md-12 text-center");
+  hidepagination[0].style.display='none'
+  {% endif %}
+  // Hide Timeline Button
+  var timelineButton = document.getElementsByClassName("showTimeline");
+  timelineButton[0].style.display='none'
+  var antiTimelineButton = document.getElementsByClassName("hideTimeline");
+  antiTimelineButton[0].style='text-decoration: none;'
+  var antiTimelineButtonX = document.getElementsByClassName("hideTimelineX");
+  antiTimelineButtonX[0].style='text-decoration: none;'
+
+  //Disable top pane buttons
+
+  // This section was partially taken from https://stackoverflow.com/questions/5552866/how-to-disable-anchor-using-javascript
+  // Jahid answered Apr 8 '15 at 17:50
+  // delliottg edited Apr 20 '15 at 1:58
+
+  // affects icons above timeline (fades them, adds X's, disables click)
+
+  citationClipboardButton = document.getElementById("citationClipboard");
+  citationClipboardButton.style.pointerEvents = "none"
+  citationClipboardButton.style.cursor = "default"
+  citationClipboardButton.style.filter = "brightness(50%)"
+
+  selectAllDefsButton = document.getElementById("selectAllDefs");
+  selectAllDefsButton.style.pointerEvents = "none"
+  selectAllDefsButton.style.cursor = "default"
+  selectAllDefsButton.style.filter = "brightness(50%)"
+
+  filterDiscButton = document.getElementsByClassName("filterDisc");
+  filterDiscButton[0].style.pointerEvents = "none"
+  filterDiscButton[0].style.cursor = "default"
+  // Change brightness
+  filterDiscButton[0].style.filter = "brightness(50%)"
+  // uncollapse if collapsed
+  $('#dropDownFilter').collapse("hide")
+
+  }
+
+  // Hides timeline and shows all other elements
+
+  function revertFunction(obj){
+  var elementshide = document.getElementsByClassName("hide-until-load");
+  elementshide[0].style.display="";
+  var pageNumHide = document.getElementById("pageNumbers");
+  pageNumHide.style.display='';
+  var timelinehide = document.getElementsByClassName("timelinehide");
+  timelinehide[0].style.display='none';
+
+  {% if is_paginated %}
+  var hidepagination = document.getElementsByClassName("col-md-12 text-center");
+  hidepagination[0].style=''
+  {% endif %}
+
+  // Show Timeline Button
+  var timelineButton = document.getElementsByClassName("showTimeline");
+  timelineButton[0].style='text-decoration: none;'
+  var antiTimelineButton = document.getElementsByClassName("hideTimeline");
+  antiTimelineButton[0].style.display='none'
+  var antiTimelineButtonX = document.getElementsByClassName("hideTimelineX");
+  antiTimelineButtonX[0].style.display='none'
+
+
+  //Enable top pane buttons
+
+  // This section was partially taken from https://stackoverflow.com/questions/5552866/how-to-disable-anchor-using-javascript
+  // Jahid answered Apr 8 '15 at 17:50
+  // delliottg edited Apr 20 '15 at 1:58
+
+  // affects icons above timeline (unfades them, removes X's, enables click)
+  citationClipboardButton = document.getElementById("citationClipboard");
+  citationClipboardButton.style.pointerEvents = "auto"
+  citationClipboardButton.style.cursor = "pointer"
+  citationClipboardButton.style.filter = "brightness(100%)"
+
+  selectAllDefsButton = document.getElementById("selectAllDefs");
+  selectAllDefsButton.style.pointerEvents = "auto"
+  selectAllDefsButton.style.cursor = "pointer"
+  selectAllDefsButton.style.filter = "brightness(100%)"
+
+  filterDiscButton = document.getElementsByClassName("filterDisc");
+  filterDiscButton[0].style.pointerEvents = "auto"
+  filterDiscButton[0].style.cursor = "pointer"
+  filterDiscButton[0].style.filter = "brightness(100%)"
+
+}
+</script>
+
+<script type="text/javascript">
+// THIS FUNCTION IS MEANT TO ADJUST ARROWS IN CASE A TIMELINE BOX OVERLAPS WITH IT
+// IT ALSO HAS ADDITIONAL LOGIC TO ENABLE THE RIGHT ARROW IF THE LAST ELEMENT ISNT TOUCHING IT
+
+var adjustArrows = (function adjustArrows(){
+  // retrieve unordered list of timeline items
+timelineOrderedList = document.querySelector('.showTimeline23')
+timelineItems = timelineOrderedList.getElementsByTagName("div");
+var anyOverlap = 0;
+var overlap = false;
+var listOverlaps = [];
+var arrowright =document.querySelector(".arrow__next")
+
+for (var i = 0; i < timelineItems.length; i++) {
+  test1 = timelineItems[i]
+  rect1 = test1.getBoundingClientRect()
+
+  test2 =document.querySelector(".arrow__next")
+  rect2 = test2.getBoundingClientRect()
+  movement = rect1.bottom - rect2.top
+  var overlap = !(rect1.bottom < rect2.top)
+  if(overlap == true){
+    anyOverlap +=1;
+    listOverlaps.push(movement)
+  }
+
+  // THIS IS OUT OF PLACE!!
+  // IS THE RIGHT ARROW ALREADY CLASHING WITH THE LAST ELEMENT?
+  // USED TO CHECK WHETHER FUNCTION WILL RUN
+  var overlaprightleft = !(rect1.left < rect2.right)
+  if (overlaprightleft) {
+    arrowright.classList.remove(disabledClass)
+    arrowright.disabled = false;
+  }
+
+
+}
+if(anyOverlap > 0){
+  var movement = Math.max.apply(Math, listOverlaps);
+  $('.arrows').css({marginTop: '+=' + movement + 'px'});
+};
+return adjustArrows;
+}());
+</script>

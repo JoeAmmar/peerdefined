@@ -1,0 +1,123 @@
+
+<center>
+  <div class="row" id="phoneRowPanel">
+    <div class="container col-md-6 col-sm-10 inlineRow" style="position:relative;">
+      <a id="mostCitedDefLink" href="/definitions/in/{{defTopCit.0.term.slug}}/#{{defTopCit.0.term.slug}}{{defTopCit.0.id}}" style="text-decoration: none;">
+    <div class="panel panel-default" style="border: none; border-radius: 10px;" id="overlayDef0">
+      <div class="panel-primary" style="">
+    <div class="panel-body" style="color: white; border-radius: 10px; background-color: #ed2323; padding-bottom: 5px; padding-top: 5px; width:100%;" id="topCitedDefColor">
+    <div class="hideUntilClick" id='hideUntilClick'>
+      <center><h3>Most Cited Definitions<h3>
+        <div id="defTopCit0">
+          {% for auth in defTopCit.0.author.all %}
+          <h4>{{auth.in_text|truncatechars:20}} ({{defTopCit.0.term.name|truncatechars:20}})</h4>
+          {% endfor %}
+          <h4>Times Cited: {{defTopCit.0.citeNumber|truncatechars:8}}</h4>
+        </div>
+        <div id="defTopCit1" style="display:none;">
+          {% for auth in defTopCit.1.author.all %}
+          <h4>{{auth.in_text|truncatechars:20}} ({{defTopCit.1.term.name|truncatechars:20}})</h4>
+          {% endfor %}
+          <h4>Times Cited: {{defTopCit.1.citeNumber|truncatechars:8}}</h4>
+        </div>
+        <div id="defTopCit2" style="display:none;">
+          {% for auth in defTopCit.2.author.all %}
+          <h4>{{auth.in_text|truncatechars:20}} ({{defTopCit.2.term.name|truncatechars:20}})</h4>
+          {% endfor %}
+          <h4>Times Cited: {{defTopCit.2.citeNumber|truncatechars:8}}</h4>
+        </div>
+      </center>
+    </div>
+    </div>
+    </div>
+  </div>
+  </a>
+  <a id="mostFollowDefLink" href="/definitions/in/{{defMostFollowed.0.term.slug}}/#{{defMostFollowed.0.term.slug}}{{defMostFollowed.0.id}}" style="text-decoration: none;">
+    <div class="panel panel-default" style="border: none; border-radius: 10px;" id="overlayDef1">
+      <div class="panel-primary">
+    <div class="panel-body" style="color: white; border-radius: 10px; background-color: #7fb800; padding-bottom: 5px; padding-top: 5px; width:100%;" id="mostFollowDefColor">
+    <div class="hideUntilClick" id='hideUntilClick'>
+      <center><h3>Most Bookmarked Definitions<h3>
+        <div id="defmostFol0">
+        {% for auth in defMostFollowed.0.author.all %}
+        <h4>{{auth.in_text|truncatechars:20}} ({{defMostFollowed.0.term.name|truncatechars:20}})</h4>
+        {% endfor %}
+        <h4>Followers: {{defMostFollowed.0.usersFollowing.all|length}}</h4>
+      </div>
+      <div id="defmostFol1" style="display:none;">
+      {% for auth in defMostFollowed.1.author.all %}
+      <h4>{{auth.in_text|truncatechars:20}} ({{defMostFollowed.1.term.name|truncatechars:20}})</h4>
+      {% endfor %}
+      <h4>Followers: {{defMostFollowed.1.usersFollowing.all|length}}</h4>
+    </div>
+    <div id="defmostFol2" style="display:none;">
+    {% for auth in defMostFollowed.2.author.all %}
+    <h4>{{auth.in_text|truncatechars:20}} ({{defMostFollowed.2.term.name|truncatechars:20}})</h4>
+    {% endfor %}
+    <h4>Followers: {{defMostFollowed.2.usersFollowing.all|length}}</h4>
+  </div>
+      </center>
+    </div>
+    </div>
+    </div>
+    </div>
+    </a>
+  </div>
+  <!-- Term Pane -->
+
+  <div class="container col-md-6 col-sm-10 inlineRow" style="position:relative;">
+  <a id="mostDefinedTermLink" href="/definitions/in/{{termMostDefs.0.slug}}" style="text-decoration: none;">
+  <div class="panel panel-default" style="border: none; border-radius: 10px;" id="overlayTerm0">
+    <div class="panel-primary">
+  <div class="panel-body" style="color: white; border-radius: 10px; background-color: #035e7b; padding-bottom: 5px; padding-top: 5px; width:100%;" id="mostDefTermColor">
+  <div class="hideUntilClick" id='hideUntilClick'>
+
+    <center>
+      <h3>Most Defined Terms<h3>
+      <div id="termmostDef0">
+      <h4>{{termMostDefs.0.name|truncatechars:20}}</h4>
+      <h4>Number of Definitions: {{termMostDefs.0.definitions.all|length}}</h4>
+    </div>
+      <div id="termmostDef1" style="display:none;">
+      <h4>{{termMostDefs.1.name|truncatechars:20}}</h4>
+      <h4>Number of Definitions: {{termMostDefs.1.definitions.all|length}}</h4>
+    </div>
+      <div id="termmostDef2" style="display:none;">
+      <h4>{{termMostDefs.2.name|truncatechars:20}}</h4>
+      <h4>Number of Definitions: {{termMostDefs.2.definitions.all|length}}</h4>
+    </div>
+
+    </center>
+  </div>
+  </div>
+  </div>
+</div>
+</a>
+  <a id="mostFollowedTermLink" href="/definitions/in/{{termMostFollowed.0.slug}}" style="text-decoration: none;">
+  <div class="panel panel-default" style="border: none; border-radius:25px;" id="overlayTerm1">
+    <div class="panel-primary">
+  <div class="panel-body" style="color: white; border-radius: 10px; background-color: #d3aa04; padding-bottom: 5px; padding-top: 5px; width:100%;" id="mostFolTermColor">
+  <div class="hideUntilClick" id='hideUntilClick'>
+    <center><h3>Most Bookmarked Terms<h3>
+      <div id="termmostFol0">
+      <h4>{{termMostFollowed.0.name|truncatechars:20}}</h4>
+      <h4>Followers: {{termMostFollowed.0.usersFollowing.all|length}}</h4>
+    </div>
+    <div id="termmostFol1" style="display:none;">
+    <h4>{{termMostFollowed.1.name|truncatechars:20}}</h4>
+    <h4>Followers: {{termMostFollowed.1.usersFollowing.all|length}}</h4>
+  </div>
+  <div id="termmostFol2" style="display:none;">
+  <h4>{{termMostFollowed.2.name|truncatechars:20}}</h4>
+  <h4>Followers: {{termMostFollowed.2.usersFollowing.all|length}}</h4>
+</div>
+    </center>
+  </div>
+  </div>
+  </div>
+  </div>
+  </a>
+
+</div>
+</div>
+</center>

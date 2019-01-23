@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load notifications_tags %}
+{% block content %}
+  <div class="">
+    <div class="">
+      <div class="">
+        {% block predefinition %}
+        {% endblock %}
+        {% block definition_content %}{% endblock %}
+        {% block definition_definition %}{% endblock %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

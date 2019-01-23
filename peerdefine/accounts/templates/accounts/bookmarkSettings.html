@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load account %}
+{% load bootstrap3 %}
+
+
+{% block content %}
+
+<center><h1>Bookmark Settings</h1>
+<h4>Pro Tip: You can unbookmark an item by clicking its adjacent the star icon.</h4>
+</center>
+<br><br>
+<div class="container col-md-6 col-sm-10" style="left: 25%; width: 50%">
+  <div class="panel panel-default" style="border: none;" id="overlayDef0">
+    <div class="panel-heading" style=""><b>Bookmarked Terms</b>
+    </div>
+    <div class="panel-primary" style="">
+  <div class="panel panel-body">
+    <table style="width:100%">
+      {% for terms in user.followingTerms.all %}
+        <tr>
+        <td>
+            <h4 class="title list-term-item-heading inlineblock" style="padding-left: 5%">
+             {{terms.name}}
+           </h4>
+           </td>
+           <td style="padding-right:7%">
+           <h4 class="favoriteTerm{{term.pk}} inlineblock pull-right"><a role="button" onClick="favoriteTerm({{terms.id}})" id='favoriteTermFollow{{terms.id}}' style='color:#fa9733;'>
+             <span title='Unbookmark this term' class="starTerm glyphicon glyphicon-star"></span>
+           </a></h4>
+
+         </td>
+       </tr>
+      {% endfor %}
+
+    </table>
+    </div>
+    </div>
+    </div>
+<br>
+    <div class="panel panel-default" style="border: none;" id="overlayDef0">
+      <div class="panel-heading" style=""><b>Bookmarked Definitions</b>
+      </div>
+      <div class="panel-primary" style="">
+    <div class="panel panel-body">
+          <table style="width:100%">
+
+                {% for defs in user.followingDefs.all %}
+
+          <tr>
+            {% for auth in defs.author.all %}
+            <td>  <h4 class="title list-term-item-heading" style="padding-left:5%">
+                  {{auth.in_text}} ({{defs.term.name}})
+              </h4> </td>
+              <td style="padding-right:7%"><h4 class="pull-right favorite{{defs.pk}} inlineblock" style="padding-right:7%">
+                <a role="button" onClick="favorite({{defs.pk}})" id='favoriteFollow'>
+                  <span title="Unbookmark this definition" class="glyphicon glyphicon-star"></span>
+                </a>
+              </h4></td>
+                    {% endfor %}
+          </tr>
+        {% endfor %}
+      </table>
+      </div>
+
+      </div>
+      </div>
+
+          <br><br><br>
+    </div>
+
+
+{% include "favorite/favorite.html" %}
+
+{% endblock %}

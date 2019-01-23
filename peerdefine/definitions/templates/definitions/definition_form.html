@@ -1,0 +1,155 @@
+{% extends "definitions/definition_base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'tagulous/lib/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'tagulous/lib/select2-3/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'tagulous/tagulous.js' %}"></script>
+<script type="text/javascript" src="{% static 'tagulous/adaptor/select2-3.js' %}"></script>
+{% endblock %}
+
+{% block cs %}
+<link rel="stylesheet" href="{% static 'tagulous/lib/select2-3/select2.css' %}">
+{% endblock %}
+
+{% block definition_content %}
+
+<!-- Shows user different information based on whether user is creating or updating definition -->
+  {% if not form.instance.pk %}
+  <center>
+    <h3>
+      Create New Definition:
+      </h3>
+      <h3>
+       <bold id='term_name'>
+         {{term_name}}
+       </bold>
+       <sup>
+  <a id="myBtn" class="btn btn-simple" style="margin-left:-1.5%;">
+    <span class="" aria-hidden="true">&#128269;
+    </span>
+  </a> </sup>
+ </h3>
+
+ {% if user.definitions_orig.count == 0 %}
+ <h4>Click the <span class="" style=""> &#128269; </span> to extract metadata from an article!</h4>
+ {% endif %}
+</center>
+  <form id="DefinitionForm" action="{% url 'definitions:create' term_id %}" method="post">
+  {% else %}
+  <center>
+  <h3>Update Definition: <bold id='term_name'>{{term_name}} </bold></h3>
+  <a id="myBtn" class="btn btn-simple">
+    <span class="glyphicon glyphicon-star text-warning" aria-hidden="true"></span>
+    Search Article Metadata
+  </a>
+  </center>
+  <form id="DefinitionForm" action="{% url 'definitions:update' pk term_id %}" method="post">
+  {% endif %}
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% for formset in inlines %}
+  <p></p>
+    {% bootstrap_formset formset %}
+    {% csrf_token %}
+  <p></p>
+    {% endfor %}
+    <input type="submit" value="Submit" id='submitButton' class="btn btn-primary btn-large">
+
+  </form>
+<br>
+<br>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Search for Metadata</h2>
+    </div>
+    <div class="modal-body">
+      <p></p>
+      <p>Please enter information exactly as it appears in the original work.</p>
+      <form style="display: flex-inline;">
+        <input type="text" id='citationInput' name="querytest" style="width:53%;  flex: 1;">
+        <select id="searchType" name="searchType" style="width:18%; flex: 1; overflow:hidden;">
+            <option value="title">Title</option>
+            <option value="doi">DOI</option>
+        </select>
+        <button type="button" id='citationSubmit' style="width:22%;  flex: 1; overflow:hidden;">Search</button>
+
+      </form>
+      <p>
+
+        <div class="row" style="display: flex;">
+          <div class="poweredByImages1">
+         <img  style="width:100%; height:100%; padding-left:20%;" src="{% static 'peerDefine/img/articleMetadata/microsoftAcademic.jpg' %}">
+         </div>
+         <div class="poweredByImages2">
+           <img style="width:60%; height:100%; padding-left:20%;" src="{% static 'peerDefine/img/articleMetadata/crossref.svg' %}">
+           </div>
+
+         </div>
+      </p>
+      <p></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- This section is a bit messy, but the ordering is needed for everything to work properly -->
+
+<!-- Code to retrieve citation meta-data -->
+{% include "retrieveCitations/citations.html" %}
+
+<!-- Code to open modal -->
+{% include "retrieveCitations/modal.html" %}
+
+<!-- Fix random aspect of page -->
+<script type="text/javascript">
+
+// Allows Modal to submit POST after pressing Enter key
+window.onload = function(){
+  $('form input').on('keypress', function(e) {
+    return e.which !== 13;
+});
+
+  $('#citationInput').keydown(function(e) {
+      if (e.keyCode == 13) {
+          $('#citationSubmit').click();
+      }
+  });
+
+// Fixes input boxes for Synonym and Discipline (they show double input boxes for some reason)
+synonymInput = document.getElementById("s2id_id_synonym");
+synonymInput.classList.remove("form-control")
+disciplineInput = document.getElementById("id_discipline");
+disciplineInput.classList.remove("form-control")
+
+// The submit button (needed for validation related to synonym tags not overlapping with term name)
+submitting = document.getElementsByClassName("btn btn-primary btn-large");
+
+}
+
+
+
+// Custom Validation to make sure that user does not enter the current term as a synonym for itself
+
+       $("#submitButton").click(function() {
+         synInput = $("#s2id_autogen2")[0];
+         synonyms = document.querySelectorAll("#s2id_id_synonym")[0]['innerText'].split('\n');
+         termName = document.querySelectorAll("#term_name")[0]['innerText'];
+         if (synonyms.indexOf(termName) > -1 | synonyms.indexOf(termName.toLowerCase()) > -1) {
+           synInput.setCustomValidity("Please do not input the term name (" + termName + ") as a synonym.");
+         } else {
+           synInput.setCustomValidity("");
+         }})
+
+</script>
+
+
+
+{% endblock %}

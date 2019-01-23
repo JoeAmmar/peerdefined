@@ -1,0 +1,112 @@
+{% extends "definitions/definition_base.html" %}
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/selectCitation.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/citationClipboard.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/expandBox.js' %}"></script>
+<script type="text/javascript" src="{% static 'izitoast/dist/js/iziToast.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'hammerjs/hammer.min.js' %}"></script>
+
+{% endblock %}
+
+{% block cs %}
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+<link rel="stylesheet" href="{% static 'izitoast/dist/css/iziToast.min.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<h1 class='text-center'>
+  {% if user.is_authenticated %}
+  {% if favoritedterm == True %}
+  <small><a role="button" onClick="favoriteTerm({{term_Id}})" id='favoriteTermFollow' style='text-decoration: none; color:#fa9733;'>
+    <span title='Bookmark this term to get updates on changes' class="glyphicon glyphicon-star"></span>
+  </a></small>
+  {% else %}
+  <small><a role="button" onClick="favoriteTerm({{term_Id}})" id='favoriteTermFollow' style='text-decoration: none; color:#fa9733;'>
+    <span title='Bookmark this term to get updates on changes' class="glyphicon glyphicon-star-empty"></span>
+  </a></small>
+  {% endif %}
+  {% endif %}
+  {# Show definition term name if there are any definition instances #}
+  {% if definition_list.0.term.name %}
+  {{definition_list.0.term.name}}
+{% else %}
+{{termSlug|title}}
+
+  {% endif %}
+ </h1>{# class-based views pass context dictionary that holds everything the model has #}
+{% if definition_list.count > 0 %}
+<h2 class='text-center'>Definitions Count: {{ definition_list.count }}
+  {% if user.is_authenticated %}
+  <sup class="small">
+    <a href="{% url 'definitions:create' term_id=term_Id %}">
+
+      <span title='Create New Definition' class="glyphicon glyphicon-plus"></span>
+
+    </a>
+  </sup>
+{% endif %}
+</h2>
+{% if user.definitions_orig.count == 0 %}
+<h4 class='text-center'> Click the <span class="glyphicon glyphicon-plus" style="color:#337AB7;"></span> to create your first definition! </h4>
+{% else %}
+{% endif %}
+{% else %}
+<h2 class='text-center'>Definitions Count: {{ definition_list.count }}
+  {% if user.is_authenticated %}
+  <sup class="small">
+    <a href="{% url 'definitions:create' term_id=term_Id %}">
+
+      <span title='Create New Definition' class="glyphicon glyphicon-plus"></span>
+
+    </a>
+  </sup>
+{% endif %}
+</h2>
+{% if user.definitions_orig.count == 0 %}
+<h4 class='text-center'> Click the <span class="glyphicon glyphicon-plus" style="color:#337AB7;"></span> to create your first definition! </h4>
+{% else %}
+<br>
+{% endif %}
+<br><br><br><br><br>
+<h2 class='text-center'> Create the first definition for this term! &#128513;</h2>
+{% endif %}
+
+{% include "topPane/topPane.html" %}
+
+<div class="hide-until-load" style="">
+{% for definition in definition_list %}
+
+  <div class="panel panel-primary showhide" id='{{definition.term.slug}}{{definition.id}}'>
+    {% include "definitions/_definition.html" %}
+  </div>
+  {# 'include' is like 'extends' but its in the middle of an html file #}
+  {# The underscore in _definition.html tells us that this html file is meant to be injected #}
+
+
+  {% endfor %}
+</div>
+{# Pagination related script if definition count grater than 0 #}
+{% if definition_list.count > 0 %}
+{% include "pagination/_pagination.html" %}
+{% include "pagination/_paginationJavascript.html" %}
+{% endif %}
+
+{# At the moment this span with id=page is necesarry or code gets broken for filter/pagination #}
+<br>
+<span><br></span>
+  <span style="display:none;" id="page"></span>
+
+<!-- The code here brings in timeline code and filtering code if a term can be found for the definition list -->
+{% if definition_list.0.term.slug %}
+{% include "timeline/timeline_text_limiter.html" %}
+{% include "timeline/timeline_ajax.html" %}
+{% include "filter/filter.html" %}
+{% include "selectAllDefs/selectAll.html" %}
+{% include "favorite/favorite.html" %}
+{% else %}
+{% include "favorite/favorite.html" %}
+{% endif %}
+{% endblock %}

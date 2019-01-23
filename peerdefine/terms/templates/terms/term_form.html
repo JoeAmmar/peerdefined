@@ -1,0 +1,13 @@
+{% extends "terms/term_base.html" %}
+{% load bootstrap3 %}
+
+{% block term_content %}
+
+<h4>Create new term!</h4>
+<form action="{% url 'terms:create' %}" method="post" id="termForm">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <input type="submit" class="btn btn-primary btn-large" value="Create">
+</form>
+
+{% endblock %}

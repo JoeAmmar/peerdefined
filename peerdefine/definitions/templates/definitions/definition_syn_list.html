@@ -1,0 +1,58 @@
+{% extends "definitions/definition_base.html" %}
+{% load staticfiles %}
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/selectCitation.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/citationClipboard.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/expandBox.js' %}"></script>
+<script type="text/javascript" src="{% static 'izitoast/dist/js/iziToast.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'hammerjs/hammer.min.js' %}"></script>
+
+{% endblock %}
+
+
+{% block cs %}
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+<link rel="stylesheet" href="{% static 'izitoast/dist/css/iziToast.min.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<h1 class='text-center'>Definitions of {{synSlug|title}} and its Synonyms</h1>
+<h2 class='text-center'>Definitions Count: {{ definition_list.count }}</h2> {# count is a method we can apply here #}
+
+{% include "topPane/topPane.html" %}
+<div class="hide-until-load">
+{% for definition in definition_list %}
+
+  <div class="panel panel-primary showhide" id='{{definition.term.slug}}{{definition.id}}'>
+    {% include "definitions/_definition.html" %}
+  </div>
+  {# 'include' is like 'extends' but its in the middle of an html file #}
+  {# The underscore in _definition.html tells us that this html file is meant to be injected #}
+
+
+  {% endfor %}
+</div>
+
+
+{# Pagination bar #}
+{% if definition_list.count > 0 %}
+{% include "pagination/_pagination.html" %}
+{% include "pagination/_paginationJavascript.html" %}
+{% endif %}
+
+{# At the moment this span with id=page is necesarry or code gets broken for filter/pagination #}
+
+<br>
+<span><br></span>
+  <span style="display:none;" id="page"></span>
+
+
+{% if definition_list.0.term.slug %}
+{% include "timeline/timeline_text_limiter.html" %}
+{% include "timeline/timeline_ajax.html" %}
+{% include "filter/filter.html" %}
+{% include "selectAllDefs/selectAll.html" %}
+{% include "favorite/favorite.html" %}
+{% endif %}
+{% endblock %}

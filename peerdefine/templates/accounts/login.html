@@ -1,0 +1,32 @@
+<!-- THE CURRENT PAGE NEEDS TO BE UPDATED FOR FACEBOOK AND GMAIL LOGIN -->
+
+{% extends "base.html" %}
+{% load socialaccount %}
+{% load staticfiles %}
+
+{% block cs %}
+
+<link rel="stylesheet" href="{% static 'peerDefine/css/login.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="">
+
+    <div class="login-div">
+    <h1>Log in</h1>
+    <form method="post">
+      {% csrf_token %}
+      <input name="csrfmiddlewaretoken" value="{{csrf_token}}" type="hidden">
+      <div class="form-group"><label class="control-label" for="id_username">Username</label><input name="username" autofocus="" maxlength="254" class="form-control" placeholder="Username" title="" required="" id="id_username" type="text"></div>
+<div class="form-group"><label class="control-label" for="id_password">Password</label><input name="password" class="form-control" placeholder="Password" title="" required="" id="id_password" type="password"></div> <!-- makes forms look way nicer -->
+      <input class="btn btn-default" value="Login" type="submit">
+    </form>
+<br>
+<hr>
+<a href="{% provider_login_url 'google' %}"><img class="socialMediaGoogle" src="{% static 'peerDefine/img/logins/newGoogle2.png' %}" alt=""></a>
+<a href="{% provider_login_url 'facebook' %}"><img class="socialMediaFacebook pull-right" src="https://scontent-ort2-2.xx.fbcdn.net/v/t39.2365-6/17639236_1785253958471956_282550797298827264_n.png?_nc_cat=0&oh=a45d66ea2907a3531a4c56951cd3c024&oe=5BEDF4EA" alt=""></a>
+  </div>
+</div>
+
+<br><br><br>  
+{% endblock %}

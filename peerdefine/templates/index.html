@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/typeahead.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/term_search_typeahead.js' %}"></script>
+{% endblock %}
+
+{% block cs %}
+<link rel="stylesheet" href="{% static 'peerDefine/css/autocompleteDropdown.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div>
+<br><br>
+  <div class="ui-widget input box-middle">
+  <h1 class"form-group">What term would you like to search?</h1>
+  <br>
+  <form action="{% url 'terms:term_search_list_view' %}" method="get" accept-charset="utf-8" autocomplete="off">
+    <center>
+    <div class="input-group">
+    <input id="terms" class="form-control form-group" name="q" placeholder="Enter a Term or Keyword" type='text'>
+    <span class="input-group-btn">
+    <input type="submit" value='Submit' class="form-group btn btn-primary">
+  </span>
+
+</div>
+</center>
+  </form>
+  </div>
+
+
+<br><br><br>
+{% include "index/panelsForIndex/topDefsTerms.html" %}
+{% include "index/searchAutocomplete/searchAutocomplete.html" %}
+{% include "index/panelsForIndex/javascriptPanels.html" %}
+
+
+</div>
+<br><br>
+{% endblock %}

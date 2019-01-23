@@ -1,0 +1,52 @@
+{% extends "terms/term_base.html" %}
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/selectCitation.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/citationClipboard.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/expandBox.js' %}"></script>
+<script type="text/javascript" src="{% static 'izitoast/dist/js/iziToast.min.js' %}"></script>
+<script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+{% endblock %}
+
+{% block cs %}
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+<link rel="stylesheet" href="{% static 'izitoast/dist/css/iziToast.min.css' %}">
+{% endblock %}
+
+{% block preterm %}
+  <a href="{% url 'definitions:create' term_id=term.pk %}">Create Definition</a>
+  <h1>{{term.name}}</h1> {# class-based views pass context dictionary that holds everything the model has #}
+  <h2>Definitions Count: {{ term.definitions.count }}</h2> {# count is a method we can apply here #}
+
+
+{% endblock %}
+
+
+{% block term_content %}
+<br>
+  <div class="col-md-10">
+    {% if term.definitions.count == 0 %}
+    <h1>No definitions in this term</h1>
+    {% else %}
+    <input class="btn btn-primary pull-right" id="citationClipboard" onclick="citationClipboardFunction(this)" type="button" value="Clipboard">
+    <br>
+    <br>
+    <br>
+<div class="hide-until-load">
+
+      {% for definition in term.definitions.all %}
+      <div class="panel panel-primary showhide" id='{{definition.term.slug}}{{definition.id}}'>
+        {% include "definitions/_definition.html" %}
+      </div>
+      {# 'include' is like 'extends' but its in the middle of an html file #}
+      {# The underscore in _definition.html tells us that this html file is meant to be injected #}
+
+
+      {% endfor %}
+    {% endif %}
+  </div>
+  </div>
+
+{% endblock %}

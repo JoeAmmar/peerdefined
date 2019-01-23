@@ -1,0 +1,184 @@
+<div class="panel-heading">
+
+
+{# Only show history glyphicon if admin or original creator #}
+	{% if user.is_authenticated %}
+
+	{% if request.user.is_superuser or request.user == definition.original_user %}
+	<h3 class="panel-title pull-right"><a title="View history of changes" href="{% url 'definitions:definition_history' definition.pk %}"><span class="glyphicon glyphicon-time"></span></a></h3>
+{% endif %}
+
+{# Bookmarks/favorites won't show up if user bookmarked the entire term and if the user is the original creator #}
+
+{% if user != definition.original_user %}
+
+{# Hollow star shows if definition is not being followed/full star if it is #}
+
+{% if user not in definition.term.usersFollowing.all %}
+{% if user in definition.usersFollowing.all %}
+	<h3 class="panel-title pull-left favorite{{definition.pk}}"><a role="button" onClick="favorite({{definition.pk}})" id='favoriteFollow' title="Unbookmark this definition"><span class="glyphicon glyphicon-star"></span></a></h3>
+{% else %}
+<h3 class="panel-title pull-left favorite{{definition.pk}}"><a role="button" onClick="favorite({{definition.pk}})" id='favoriteFollow' title="Bookmark this definition to get updates on changes"><span class="glyphicon glyphicon-star-empty"></span></a></h3>
+{% endif %}
+{% else %}
+{% if user in definition.usersFollowing.all %}
+	<h3 class="panel-title pull-left favorite{{definition.pk}}"><a role="button" style="display:none;" onClick="favorite({{definition.pk}})" id='favoriteFollow' title="Unbookmark this definition"><span class="glyphicon glyphicon-star"></span></a></h3>
+{% else %}
+<h3 class="panel-title pull-left favorite{{definition.pk}}"><a role="button" style="display:none;" onClick="favorite({{definition.pk}})" id='favoriteFollow' title="Bookmark this definition to get updates on changes"><span class="glyphicon glyphicon-star-empty"></span></a></h3>
+{% endif %}
+
+{% endif %}
+{% endif %}
+	{% endif %}
+
+	{# The following if statement determines if the page is a query from a discipline or synonym tag #}
+
+	{% if '/definitions/discipline/' in request.build_absolute_uri or '/definitions/synonyms/' in request.build_absolute_uri  %}
+
+	{#  panel text for each definition to include in_text citation and the relevant term #}
+
+	{% for def in definition.author.all %}
+        <h3 class="panel-title">&nbsp;{{def.in_text}} ({{definition.term.name}})</h3>
+	{% endfor %}
+	{% else %}
+	{#  panel text for each definition to include in_text citation ONLY #}
+	{% for def in definition.author.all %}
+        <h3 class="panel-title">&nbsp;{{def.in_text}}</h3>
+	{% endfor %}
+	{% endif %}
+</div>
+<div class="post media">
+	{# Checkbox on right side of modal #}
+
+	  <input class="form-check-input pull-right pull-a-bit-less-left" type="checkbox" id="inlineCheckbox" onclick="citationCheckbox(this)" value="check">
+
+<div class="moving-elements">
+	{# Limit-text class refers to minimized panel #}
+	{# expand-text class refers to expanded panel #}
+	<h3 class = 'limit-text' style="display:">{{ definition.defs}}</h3>
+	<h3 class = 'expand-text' style="display: none;">{{ definition.defs}}</h3>
+{% if definition.author.all %}
+		{% for def in definition.author.all %}
+		{# 'authorsLabel authorsLabelHidden' classes is for expanded panel #}
+			<b><p class="authorsLabel authorsLabelHidden">Author(s): &nbsp;</p></b>
+			{# in-text authors class is for minimized panel #}
+			 <p class="in-text authors">{{def.in_text|truncatechars:40}}</p>
+		{% endfor %}
+{% endif %}
+
+		{# This Div class is used to refer to elements hidden when not expanded #}
+<div class="expanding limit-text">
+		{% for def in definition.author.all %}
+		{% if def.citation %}
+		 <b><p class="citationLabel">Citation:</p></b>
+		 <br>
+		<p class='citation'>{{def.citation}}</p>
+		{% endif %}
+		{% endfor %}
+
+{# Setting up Disciplines with links to Discipline Definition-List pages #}
+
+			{% if definition.discipline.all %}
+			<p></p>
+			<div style="font-size: 16px" class='disciplines'>
+		<p><b style='font-size: 14px'>Disciplines</b> &nbsp;<!-- pretend an enclosing class has big font size -->
+		{% for disc in definition.discipline.all %}
+    <span class="label label-primary label-as-badge">
+			<a href="{% url 'definitions:discipline_search_list_view' discSlug=disc.slug %}">
+			{{disc.name}}
+			</a>
+		</span> &nbsp;
+		{% endfor %}
+		{% else %}
+		<div style="font-size: 16px; display: none;" class='disciplines'>
+		<p style="display: none;"><b style='font-size: 0px'></b>
+			<span class="label label-primary label-as-badge">
+				<a style='pointer-events: none; display: none;'>No Disciplines Listed</a>
+			</span>
+		{% endif %}
+		</div>
+		</p>
+		<div style="font-size: 16px" class='synonyms'>
+				{% if definition.synonym.all  %}
+		<p><b style='font-size: 14px'>Synonyms</b> &nbsp;<!-- pretend an enclosing class has big font size -->
+
+
+	{# Setting up Synonyms with links to Synonym Definition-List pages #}
+
+		{% for syn in definition.synonym.all %}
+    <span class="label label-primary label-as-badge">
+			<a href="{% url 'definitions:synonym_search_list_view' synSlug=syn.slug %}">
+				{{syn.name}}
+			</a>
+		</span> &nbsp;
+		{% endfor %}
+{% endif %}
+</div>
+{# Citation Information within blocks #}
+
+		</div>
+		{% if definition.citeNumber %}
+			<h3 class="pull-right pull-a-bit-left pull-a-bit-up" style='margin-top:0px;'>Times Cited: {{definition.citeNumber}}</h3>
+		{% endif %}
+
+
+{# Bottom of Panel with User who made last edit and time of last edit #}
+
+<div class="expanding2">
+		<p></p>
+		<h5 class="media-heading">
+			<span class="username"><a href="{% url 'definitions:for_user' username=definition.user.username %}">@{{ definition.user.username }}</a></span>
+
+{# "created_at" might be an innapropriate naming, since it is technically referring to modification date #}
+
+			<time class="time">{{ definition.created_at }}</time>
+
+{# The term specific to this definition #}
+{# If Page is Synonym List or Discipline List, then make Term a hyperlink to its Definition List #}
+
+{% if '/definitions/discipline/' in request.build_absolute_uri or '/definitions/synonyms/' in request.build_absolute_uri  %}
+			{% if definition.term %}
+			<span class="term-name">in <a href="{% url 'definitions:term_single' termSlug=definition.term.slug %}">{{ definition.term.name }}</a></span>
+			{% endif %}
+{% else %}
+{% if definition.term %}
+<span class="term-name">in {{ definition.term.name }}</span>
+{% endif %}
+{% endif %}
+
+		</h5>
+
+
+{# Delete and modify buttons #}
+{# Deletion only allowed for original users or superusers #}
+{# Modification is only allowed for logged in users #}
+
+		<div class="media-footer">
+			{% if user.is_authenticated and not hide_delete %}
+			{% if request.user.is_superuser or definition.original_user == user %}
+				<a href="{% url 'definitions:delete' pk=definition.pk %}" title="delete" class="btn btn-simple">
+					<span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+					<span class="text-danger icon-label">Delete</span>
+				</a>
+			{% endif %}
+			{% endif %}
+			{% if user.is_authenticated and not hide_modify %}
+			{% if "/definitions/delete/" in request.path %}
+			{% else %}
+			{% if definition.term.id %}
+			<a href="{% url 'definitions:update' pk=definition.pk term_id=definition.term.id %}" title="update" class="btn btn-simple">
+				{% else %}
+			<a href="{% url 'definitions:update' pk=definition.pk term_id=term_id %}" title="update" class="btn btn-simple">
+				{% endif %}
+					<span class="glyphicon glyphicon-edit text-warning" aria-hidden="true"></span>
+					<span class="text-warning icon-label">Update</span>
+				</a>
+			{% endif %}
+			{% endif %}
+
+			</div>
+		</div>
+	</div>
+
+</div>
+<center><span class="glyphicon glyphicon-menu-down glyphicon-up-down glyphicon-menu-up-down-unselected " onclick="expandBox(this)"></span></center>

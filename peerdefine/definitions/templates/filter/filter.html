@@ -1,0 +1,515 @@
+<script>
+
+
+// Global Variables
+
+// Definitions
+  Defs = document.getElementsByClassName("hide-until-load") // first step in extracting definitions
+  allDefs = Defs[0]['children'] // definitions
+  sallDefs = Defs[0]['children'] // a copy of allDefs, (allDefs is modified in functions, sallDefs is not)
+
+  // unselectAll variable (used for logic on disciplines pane checkboxes)
+  unselectAll = false // if true, all disciplines are selected
+
+  // keeps track of current page (needed for pagination)
+  var current_page = 1;
+
+
+// Uncheck checkboxes for ALL Definitions (appears in containsDisc() function,
+          // to ensure all definitions are unselected whenever a filter is used)
+
+function unSelectDefinitions(){
+  defUncheckAllBoxes = []
+
+  for (var i = 0; i < defListPages.length; i++) {
+    //gather checkboxes for unfiltered definitions
+    //**Technically, hidden definitions checked using javascript will go unnoticed by this function
+    defUncheckAllBoxes.push(defListPages[i].getElementsByClassName("form-check-input")[0])
+  }
+  for (var i = 0; i < defUncheckAllBoxes.length; i++) {
+    // if checked, uncheck
+    if (defUncheckAllBoxes[i].checked) {
+      defUncheckAllBoxes[i].click()
+    }
+  }
+}
+
+// Select All button (applies to discipline filter pane)
+function selectAllDisc(){
+if (document.getElementById("selectAll").checked) {
+  // always uncheck Select All button
+document.getElementById("selectAll").checked = false
+}
+disciplineInput = document.getElementsByClassName("hideUntilClick")[0].getElementsByTagName("input")
+
+discCheck = []
+for (var i = 1; i < disciplineInput.length; i++) {
+  discCheck.push(disciplineInput[i].checked)
+}
+// if any items are unchecked
+if (discCheck.includes(false)) {
+  // check all unchecked items
+  for (var i = 1; i < disciplineInput.length; i++) {
+    if (!disciplineInput[i].checked) {
+      disciplineInput[i].click()  //click is necesarry here to activate function
+    }
+  }
+} else {
+  // if all items are checked, uncheck all items
+  for (var i = 1; i < disciplineInput.length; i++) {
+    if (disciplineInput[i].checked) {
+      disciplineInput[i].click() //click is necesarry here to activate function
+    }
+  }
+
+}
+
+// checkIfSelectAll() checks to see if all boxes are unchecked
+checkIfSelectAll(disciplineInput)
+}
+
+// This function checks to see if all discipline filter boxes are unchecked
+function checkIfSelectAll(disciplineInput){
+function isChecked(check){
+return !check.checked
+ }
+var disciplineArray = [].slice.call(disciplineInput); //creates array from disciplineInput
+
+
+var disciplineFilteredArray = disciplineArray.filter(function(input) {
+  return input.id !== 'selectAll'  //selectAll checkbox is ignored
+})
+
+// unselectAll is a global variable
+ if (disciplineFilteredArray.every(isChecked)) {
+unselectAll = true;
+} else{
+  unselectAll = false;
+}
+return unselectAll;
+}
+
+
+
+
+// Make list of all disciplines
+function getDisciplinesList(){
+allDisciplines = document.getElementsByClassName('disciplines')
+disciplines = []
+for (var i = 0; i < allDisciplines.length; i++) {
+  var discs;
+  //If disciplines exist for definition, extract them into disciplines variable
+  if (typeof(allDisciplines[i]['children'][0]) !== "undefined"){
+    discs = allDisciplines[i]['children'][0]['children']
+  for (var a = 1; a < discs.length; a++) {
+    disciplines.push(discs[a]['innerText'].trim())
+  }
+  }
+}
+
+
+
+// https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+// Answered By: Martijn Pieters  Feb 10 '12 at 15:13
+// Edited By: edited Dec 26 '16 at 10:53
+
+// extracting list of unique disciplines
+var unique = [];
+$.each(disciplines, function(i, el){
+    if($.inArray(el, unique) === -1) unique.push(el);
+});
+return unique; //return list of unique disciplines
+}
+
+//Create Disciplines/checkboxes for the discipline filter pane
+function populateDisciplinesList(){
+  disciplineList = document.getElementById('filterDiscList')
+  allDisciplines = getDisciplinesList()
+  for (var i = 0; i < allDisciplines.length; i++) {
+    var li = document.createElement("li");
+    radio = document.createElement("input");
+    radio.type = "checkbox";
+    radio.label = allDisciplines[i];
+    radio.value = allDisciplines[i];
+    radio.onclick = function(){
+      onClickFilter(); //function activated when clicking radio input (this activates most functions on page)
+    };
+    var label = document.createElement("label");
+    label.appendChild(radio)
+    textNodeDisc = document.createTextNode(allDisciplines[i])
+    spanDisc = document.createElement("span")
+    spanDisc.appendChild(textNodeDisc)
+    label.appendChild(spanDisc)
+    li.appendChild(label)
+    disciplineList.appendChild(li) // add elements to discipline list
+  }
+
+}
+
+// Returns list of selected disciplines
+function selectDisciplines(){
+  // Check to see if all discipline buttons unselected
+  checkIfSelectAll(document.getElementsByClassName("hideUntilClick")[0].getElementsByTagName("input"))
+
+  disciplineSelected = []
+  checkboxesDiscipline = document.getElementById('filterDiscList')['children']
+  for (var i = 1; i < checkboxesDiscipline.length; i++) {
+    // if either specific checkbox in discipline pane is selected,
+       // or if all or selected
+        // then gather those disciplines
+    if (checkboxesDiscipline[i]['children'][0]['children'][0].checked || unselectAll == true) {
+      disciplineSelected.push(checkboxesDiscipline[i]['children'][0]['children'][0].value)
+    }
+  }
+
+  // changes page to the first page
+  current_page = 1;
+  changePage(current_page);
+  return disciplineSelected // returns list of selected disciplines
+}
+
+//Applies class "filterOut" based on whether definition contains selected discipline filters
+function containsDisc(){
+discSelected = selectDisciplines(); // returns list of selected disciplines
+for (var i = 0; i < sallDefs.length; i++) {
+  isDisciplineThere = false;
+
+  discDef = sallDefs[i].getElementsByClassName('disciplines')
+for (var e = 0; e < discDef.length; e++) {
+  // if discipline exists, then extract it into discs
+  if (typeof(discDef[e]['children'][0]) !== "undefined"){
+    discs = discDef[e]['children'][0]['children']
+  for (var a = 0; a < discs.length; a++) {
+    // set isDisciplineThere to True if any containing discipline in definition
+              /// matches any of the selected filters
+    if(discSelected.includes(discs[a]['innerText'].trim())){
+      isDisciplineThere = true;
+    }
+}
+  }
+  unSelectDefinitions() // uncheck all checkboxes for Definitions List
+  }
+
+// if filterOut is not already a class and selected discipline filter isnt in a definition
+   /// then add filterOut class to definition
+  if (isDisciplineThere === false && !sallDefs[i].classList.contains('filterOut')) {
+    sallDefs[i].classList.add('filterOut')
+  }
+  // if filterOut is already a class and selected discipline filter is in a definition
+     /// then remove filterOut class from definition
+  if (isDisciplineThere === true && sallDefs[i].classList.contains('filterOut')) {
+    sallDefs[i].classList.remove('filterOut')
+  }
+
+}
+}
+
+//Hide definitions with the class filterOut
+function filterOut(){
+  allDefs = Defs[0]['children']
+  for (var i = 0; i < allDefs.length; i++) {
+    if (allDefs[i].classList.contains('filterOut')) {
+      allDefs[i].style.display = 'none'
+    } else{
+      allDefs[i].style.display = ''
+    }
+  }
+}
+
+
+// the following function is used whenever a radio input in the disciplines filter pane
+ // is clicked
+
+function onClickFilter(){
+  selectDisciplines()
+  containsDisc()
+  filterOut()
+  collectDefinitions()
+  changePage(1);
+  current_page = 1;
+}
+
+
+//INTERRUPTING FILTER CODE WITH PAGINATION CODE
+// ORGANIZE LATER (AT THE MOMENT, MOVING THIS SEGMENT BREAKS CODE)
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// PAGINATION ////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+// Much of the pagination code is directly taken from and/or adapted from Populus' post
+// edited Aug 27 '14 at 19:55
+// https://stackoverflow.com/questions/25434813/simple-pagination-in-javascript
+
+
+
+// default number of definitions per page
+var records_per_page = 10;
+//extract definitions per page from dropdown (if any option is selected)
+var page_opts = document.getElementById("definitionsPerPage")
+
+// Creating pagination options based on number of items
+function createPagItems(){
+  //if greater than 5, add option for 5 per page
+if (sallDefs.length > 5) {
+var option5 = document.createElement("option");
+option5.value = 5
+opt5Text = document.createTextNode("5");
+option5.appendChild(opt5Text)
+page_opts.appendChild(option5)
+}
+if (sallDefs.length > 10) {
+    //if greater than 10, add option for 10 per page
+  var option10 = document.createElement("option");
+  option10.value = 10
+  opt10Text = document.createTextNode("10");
+  option10.appendChild(opt10Text)
+  page_opts.appendChild(option10)
+}
+if (sallDefs.length > 20) {
+      //if greater than 20, add option for 20 per page
+  var option20 = document.createElement("option");
+  option20.value = 20
+  opt20Text = document.createTextNode("20");
+  option20.appendChild(opt20Text)
+  page_opts.appendChild(option20)
+}
+}
+
+// Changes elements per page
+// This function is directly called when an option is changed in the dropdown
+function changePaginate(numItems){
+  // change records per page based on selected options in dropdown
+  records_per_page = numItems.selectedOptions[0].value
+  changePage(1);
+  current_page = 1;
+  pageNumLinks();
+}
+
+
+//  page number selection on bottom of page
+
+// grabs page number navigation elements in bottom of page
+paginationList = document.getElementsByClassName("pagination")[0]
+nextButton = document.getElementById("list_btn_next")
+
+//Creating links for page number navigation
+function pageNumLinks(){
+paginationList = document.getElementsByClassName("pagination")[0]
+prevButton = document.getElementById("list_btn_prev")
+
+//Following code is needed to remove glitch of page numbers duplicating
+     // after page change
+  for (var i = paginationList['children'].length; i > 0; i--) {
+    if (paginationList['childNodes'][i].id == "") {
+      paginationList.removeChild(paginationList.childNodes[i])
+    }
+  }
+
+
+  // creating elements for each page number
+  for (var i = numPages(); i > 0; i--) {
+    //If element isnt current page, create link that changes page
+    if (i != current_page){
+      listItem = document.createElement("li")
+      hyperlink = document.createElement("a")
+      hyperlink.href = "javascript:changePage(" + i + ")"
+      hyperlinkText = document.createTextNode(i)
+      hyperlink.appendChild(hyperlinkText)
+      hyperlink.onclick = function(){
+        onClickChangeCurrentPage(this); //change page on click
+      };
+      listItem.appendChild(hyperlink)
+
+      //put previous button before page numbers
+      prevButton.parentNode.insertBefore(listItem, prevButton.nextSibling);
+
+    } else{
+      // if element is current page, then make list element without clickable link
+      listItem = document.createElement("li")
+      hyperlink = document.createElement("a")
+      hyperlinkText = document.createTextNode(i)
+      hyperlink.appendChild(hyperlinkText)
+      hyperlink.style="color: black; pointer-events:none;"
+      listItem.appendChild(hyperlink)
+      //put previous button before page numbers
+      prevButton.parentNode.insertBefore(listItem, prevButton.nextSibling);
+    }
+  }
+}
+
+
+// Onclick function to change current page based on numbers
+function onClickChangeCurrentPage(pageNum){
+current_page = pageNum.innerText
+pageNumLinks() //create page number nav pane on bottom with links
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////// FILTER CODE CONTINUES HERE ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+// Get all the Definitions on page
+
+function collectDefinitions(){
+defListPages = []
+for (var i = 0; i < sallDefs.length; i++) {
+  // Extract all definitions without filterOut class
+  if (!sallDefs[i].classList.contains('filterOut')) {
+    defListPages.push(sallDefs[i])
+  }
+}
+return defListPages
+}
+
+// defListPages is the result of the function that collects filtered definitions
+defListPages = collectDefinitions()
+
+
+// function to set current page = previous page (applied when clicking button in navbar)
+function prevPage()
+{
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page);
+    }
+}
+// function to set current page = next page (applied when clicking button in navbar)
+function nextPage()
+{
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+    }
+}
+
+// Function to change page and show definitions relevant to that page
+function changePage(page)
+{
+
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev");
+    var listing_table = document.getElementsByClassName("hide-until-load");
+    var page_span = document.getElementById("page");
+
+    // Validate page
+    if (page < 1) page = 1; // corrects possible error of page 0 or -1 page
+    if (page > numPages()) page = numPages(); // corrects possible error of current page higher than num of pages
+
+    // adding filterOut class to all definitions from listing_table
+    // This makes the subsequent code easier to manage
+    for (var i = 0; i < listing_table[0].children.length; i++) {
+      if (!listing_table[0].children[i].classList.contains("filterOut")) {
+        listing_table[0].children[i].classList.add("filterOut")
+      }
+    }
+
+    // cuts definitions list up based on records_per_page and current page num
+    // i is the first item on specific page
+    // i is limited to the definitions on that page (cannot go higher)
+    for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < defListPages.length; i++) {
+      if (typeof(defListPages[i]) != "undefined") {
+        for (var a = 0; a < listing_table[0].children.length; a++) {
+          // remove filterOut class in listing_table for items on current page (unhide them)
+          if (listing_table[0].children[a].children[1] === defListPages[i].children[1]) {
+            listing_table[0].children[a].classList.remove("filterOut")
+          }
+        }
+    }}
+    filterOut() // hide definitions with class .filterOut
+    pageNumLinks() // create page number navbar on bottom with links
+    page_span.innerHTML = page + "/" + numPages();
+
+
+    // Controls visibility of "previous" button for bool current_page == first page
+    if (page == 1 | page == 0) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    // Controls visibility of "next" button for bool current_page == last page
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+
+}
+
+//Calculates number of pages
+function numPages(){
+    return Math.ceil(defListPages.length / records_per_page);
+}
+
+// functions that apply once when page loads
+  changePage(1);
+  current_page = 1;
+  setTimeout("getDisciplinesList()", 1000);
+  setTimeout("populateDisciplinesList()", 1000);
+  createPagItems();
+
+    // This function checks to see if the link is redirected from index
+      // if so, it locates the specific definition, changes pages (if necesarry),
+        // and scrolls to the proper location
+setTimeout(function(){
+if(window.location.href.includes("/#")){ //Checks hyperlink for id tag
+  var indexOfLinkDef = window.location.href.indexOf("#"); // id index in string
+  var definitionLinkId = window.location.href.substr(indexOfLinkDef+1); //extracted id
+  // Find out which page specific definition is on
+  var placeInDefinitionsList = defListPages.findIndex(def => def.id == definitionLinkId); //locates definition's location in definition list
+ // if definition is not on the current page, change pages
+  if(placeInDefinitionsList > (records_per_page - 1)){ //records_per_page = number of records on page
+    var defPageLocation = Math.ceil(placeInDefinitionsList/(records_per_page-1));
+    current_page = defPageLocation; //need this line as well or page functionality breaks
+    changePage(defPageLocation);
+
+    // scroll to definition
+    // scrolltop code taken from Tushar Gupta, last edited Nov 9, 13
+    // https://stackoverflow.com/questions/19874912/how-to-scroll-to-the-particular-div-using-jquery-or-javascript
+    $(window).scrollTop($(window.location.href.substr(indexOfLinkDef)).offset().top);
+  };
+}},
+5) 
+
+
+//Select all definitions (function activated when clicking big checkmarks on pane)
+function checkAllDefs(){
+  function unSelectFilteredDefinitions(){
+  defFilterOut = $(".filterOut").not(defListPages)
+  for (var i = 0; i < defFilterOut.length; i++) {
+    defChecked = defFilterOut[i].getElementsByClassName("form-check-input")[0]
+    if (defChecked.checked) {
+      defChecked.click()
+    }
+  }
+  }
+
+
+unSelectFilteredDefinitions();
+defCheckBoxes = []
+for (var i = 0; i < defListPages.length; i++) {
+  defCheckBoxes.push(defListPages[i].getElementsByClassName("form-check-input")[0])
+}
+
+
+if ($(defCheckBoxes).filter(":checked").length === defCheckBoxes.length) {
+for (var i = 0; i < defCheckBoxes.length; i++) {
+    defCheckBoxes[i].click()
+}} else if($(".form-check-input").filter(":checked").length === 0){
+  for (var i = 0; i < defCheckBoxes.length; i++) {
+      defCheckBoxes[i].click()
+
+}} else{
+  for (var i = 0; i < defCheckBoxes.length; i++) {
+    if (defCheckBoxes[i].checked == false) {
+      defCheckBoxes[i].click()
+    } }
+  }
+}
+</script>

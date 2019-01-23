@@ -1,0 +1,79 @@
+{% extends "terms/term_base.html" %}
+{% load staticfiles %}
+{% load mytags %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/tableRowClick.js' %}"></script>
+{% endblock %}
+
+{% block preterm %}
+<div class="col-md-12">
+  <div class="content">
+
+    <center><h1>Terms
+  {% if user.is_authenticated %}
+
+  <sup class="small"><a href="{% url 'terms:create' %}">
+    <span title='Create New Term!' class="glyphicon glyphicon-plus"></span>
+  </a></sup>
+
+  {% if user.definitions_orig.count == 0 %}
+  <h4>Click the <span class="glyphicon glyphicon-plus" style="color:#337AB7;"></span> to create a new Term!</h4>
+  {% endif %}
+  {% endif %}
+
+</h1>
+<br>
+ </center>
+</div>
+</div>
+
+{% endblock %}
+
+{% block term_content %}
+<div class="col-md-12">
+  <center>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Term</th>
+        <th scope="col"># of Definitions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for term in object_list %}
+    <tr class='clickable-row' data-href="{% url 'definitions:term_single' termSlug=term.slug %}">
+      <td>
+          <h3 class="title list-term-item-heading">
+            {{term.name}}
+          </h3>
+      </td>
+      <td>
+      <div class="list-term-item-text container-fluid">
+        {{term.description_html}}
+        <div class="row">
+
+            {% if term.definitions.count > 1 %}
+              <h3 class="title list-term-item-heading">
+                {{term.definitions.count}}  Definitions {{term.posts.count|pluralize}}
+              </h3>
+            {% else %}
+              <h3 class="title list-term-item-heading">
+                {{term.definitions.count}} Definition {{term.posts.count|pluralize}}
+              </h3>
+            {% endif %}
+        </div>
+      </div>
+  </td>
+  </tr>
+    {% endfor %}
+
+  </div>
+</tbody>
+</table>
+</div>
+
+
+
+{% include "pagination/_pagination.html" %}
+{% endblock %}

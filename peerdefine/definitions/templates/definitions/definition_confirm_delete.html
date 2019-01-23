@@ -1,0 +1,21 @@
+{% extends "definitions/definition_base.html" %}
+
+{% block definition_content %}
+<center>
+<h1>Are you sure you want to delete this definition?</h1>
+</center>
+
+<div class="definitions">
+    <div class="panel panel-primary showhide" style='width:70%; margin-left:15%;'>
+      {% include "definitions/_definition.html" with definition=object hide_delete=True  %}
+    </div>
+  </div>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="submit" value="Confirm Delete" class="btn btn-danger btn-large">
+  <a href="{% url 'definitions:term_single' termSlug=definition.term.slug %}"
+  class="btn btn-simple btn-large btn-default">Cancel</a>
+</form>
+
+{% endblock %}

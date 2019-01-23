@@ -1,0 +1,53 @@
+<script>
+//THIS SCRIPT IS SPECIFIC TO THE SELECT ALL BUTTON (double check marks)
+
+  // var defListPages refers to definitions filtered out (not due to pagination)
+  // defListPages refers to visible definitions
+
+  // ".filterOut" class applies to ALL hidden definitions
+  // A definition may have the ".filterOut" class because it's on the next page...
+      // not because it doesn't meet filter criteria
+
+  //Select all definitions (function activated when clicking big checkmarks on pane)
+  function checkAllDefs(){
+    //uncheck definitions that are filtered out
+    function unSelectFilteredDefinitions(){
+      // defFilterOut contains definitions hidden due to filter (not due to pagination)
+    defFilterOut = $(".filterOut").not(defListPages)
+    for (var i = 0; i < defFilterOut.length; i++) {
+      //uncheck definitions
+      defChecked = defFilterOut[i].getElementsByClassName("form-check-input")[0]
+      if (defChecked.checked) {
+        defChecked.click()
+      }
+    }
+    }
+
+
+  unSelectFilteredDefinitions(); // run function (only accessible locally)
+
+
+  defCheckBoxes = []
+  for (var i = 0; i < defListPages.length; i++) {
+    defCheckBoxes.push(defListPages[i].getElementsByClassName("form-check-input")[0])
+  }
+
+ // if all relevant definitions are checked, uncheck all of them
+  if ($(defCheckBoxes).filter(":checked").length === defCheckBoxes.length) {
+  for (var i = 0; i < defCheckBoxes.length; i++) {
+      defCheckBoxes[i].click()
+
+      // if all relevant definitions are unchecked, check all of them
+  }} else if($(".form-check-input").filter(":checked").length === 0){
+    for (var i = 0; i < defCheckBoxes.length; i++) {
+        defCheckBoxes[i].click()
+
+  }} else{
+    // some relevant definitions are checked, check relevant unchecked definitions
+    for (var i = 0; i < defCheckBoxes.length; i++) {
+      if (defCheckBoxes[i].checked == false) {
+        defCheckBoxes[i].click()
+      } }
+    }
+  }
+</script>

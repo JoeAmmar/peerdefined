@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block js %}
+{% endblock %}
+
+{% block cs %}
+{% endblock %}
+
+{% block content %}
+
+<div style="">
+  <div class="row">
+    {% block preterm %}{% endblock %}
+    {% block term_content %}{% endblock %}
+    {% block post_post %}{% endblock %}
+  </div>
+</div>
+<br>
+<br>
+<br>
+{% endblock %}

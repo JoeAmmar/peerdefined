@@ -1,0 +1,159 @@
+<script type="text/javascript">
+// CODE FOR CHANGING PANELS ON INDEX (COLOR AND CONTENT)
+
+// The function in Chunk #1 sets in to motion the transitions for each of the panels
+// Note that the last transition for each panel is the form it appears when the page loads
+// This code applies once when the page loads
+// The subsequest code chunk (Chunk #2) loops over these transitions repeatedly
+
+// // // // // // // // // // // // // // // // // // // // // // // // // // //
+// // // // // // // // // // CHUNK #1 // // // // // // // // // // // // // //
+// // // // // // // // // // // // // // // // // // // // // // // // // // //
+
+// Coolor.co used for colors
+function panelsAnimation(){
+setTimeout(function(){
+
+  // Most Cited Definitions Panel
+$("#defTopCit0").fadeToggle(1);
+$("#defTopCit1").fadeToggle(1);
+$("#mostCitedDefLink").attr("href", "/definitions/in/{{defTopCit.1.term.slug}}/#{{defTopCit.1.term.slug}}{{defTopCit.1.id}}")
+$("#topCitedDefColor").animate({
+            backgroundColor: '#ff6666;',
+        },
+      400);},
+       10000);
+
+
+setTimeout(function(){
+$("#defTopCit1").fadeToggle(1);
+$("#defTopCit2").fadeToggle(1);
+$("#mostCitedDefLink").attr("href", "/definitions/in/{{defTopCit.2.term.slug}}/#{{defTopCit.2.term.slug}}{{defTopCit.2.id}}")
+$("#topCitedDefColor").animate({
+            backgroundColor: '#d81e5b;',
+        },
+      400);},
+       30000);
+
+setTimeout(function(){
+$("#defTopCit2").fadeToggle(1);
+$("#defTopCit0").fadeToggle(1);
+$("#mostCitedDefLink").attr("href", "/definitions/in/{{defTopCit.0.term.slug}}/#{{defTopCit.0.term.slug}}{{defTopCit.0.id}}")
+$("#topCitedDefColor").animate({
+            backgroundColor: '#ed2323',
+        },
+      400);},
+       50000);
+
+
+  // Most Followed Definitions Panel
+
+ setTimeout(function(){
+ $("#defmostFol0").fadeToggle(1);
+ $("#defmostFol1").fadeToggle(1);
+ $("#mostFollowDefLink").attr("href", "/definitions/in/{{defMostFollowed.1.term.slug}}/#{{defMostFollowed.1.term.slug}}{{defMostFollowed.1.id}}")
+ $("#mostFollowDefColor").animate({
+             backgroundColor: '#9ABF88;',
+         },
+       400);},
+        20000);
+
+
+ setTimeout(function(){
+ $("#defmostFol1").fadeToggle(1);
+ $("#defmostFol2").fadeToggle(1);
+ $("#mostFollowDefLink").attr("href", "/definitions/in/{{defMostFollowed.2.term.slug}}/#{{defMostFollowed.2.term.slug}}{{defMostFollowed.2.id}}")
+ $("#mostFollowDefColor").animate({
+             backgroundColor: '#325c14;',
+         },
+       400);},
+        40100);
+
+ setTimeout(function(){
+ $("#defmostFol2").fadeToggle(1);
+ $("#defmostFol0").fadeToggle(1);
+ $("#mostFollowDefLink").attr("href", "/definitions/in/{{defMostFollowed.0.term.slug}}/#{{defMostFollowed.0.term.slug}}{{defMostFollowed.0.id}}")
+ $("#mostFollowDefColor").animate({
+             backgroundColor: '#7fb800',
+         },
+       400);},
+        60000);
+
+
+// Script for Term panes
+
+  // Most Defined Terms Panel
+setTimeout(function(){
+$("#termmostDef0").fadeToggle(1);
+$("#termmostDef1").fadeToggle(1);
+$("#mostDefinedTermLink").attr("href", "/definitions/in/{{termMostDefs.1.slug}}")
+$("#mostDefTermColor").animate({
+            backgroundColor: '#5eb1bf',
+        },
+      400);},
+       13000);
+
+
+setTimeout(function(){
+$("#termmostDef1").fadeToggle(1);
+$("#termmostDef2").fadeToggle(1);
+$("#mostDefinedTermLink").attr("href", "/definitions/in/{{termMostDefs.2.slug}}")
+$("#mostDefTermColor").animate({
+            backgroundColor: '#1c3144;',
+        },
+      400);},
+       33000);
+
+setTimeout(function(){
+$("#termmostDef2").fadeToggle(1);
+$("#termmostDef0").fadeToggle(1);
+$("#mostDefinedTermLink").attr("href", "/definitions/in/{{termMostDefs.0.slug}}")
+$("#mostDefTermColor").animate({
+            backgroundColor: '#035e7b',
+        },
+      400);},
+       53000);
+
+  // Most Followed Terms Panel
+
+ setTimeout(function(){
+ $("#termmostFol0").fadeToggle(1);
+ $("#termmostFol1").fadeToggle(1);
+ $("#mostFollowedTermLink").attr("href", "/definitions/in/{{termMostFollowed.1.slug}}")
+ $("#mostFolTermColor").animate({
+             backgroundColor: '#e0c03e;',
+         },
+       400);},
+        23000);
+ setTimeout(function(){
+ $("#termmostFol1").fadeToggle(1);
+ $("#termmostFol2").fadeToggle(1);
+ $("#mostFollowedTermLink").attr("href", "/definitions/in/{{termMostFollowed.2.slug}}")
+ $("#mostFolTermColor").animate({
+             backgroundColor: '#b2a107;',
+         },
+       400);},
+        43000);
+
+ setTimeout(function(){
+ $("#termmostFol2").fadeToggle(1);
+ $("#termmostFol0").fadeToggle(1);
+ $("#mostFollowedTermLink").attr("href", "/definitions/in/{{termMostFollowed.0.slug}}")
+ $("#mostFolTermColor").animate({
+             backgroundColor: '#d3aa04',
+         },
+       400);},
+        63000);
+}
+
+// // // // // // // // // // // // // // // // // // // // // // // // // // //
+// // // // // // // // // // CHUNK #2 // // // // // // // // // // // // // //
+// // // // // // // // // // // // // // // // // // // // // // // // // // //
+
+// Setting intervals to repeat animations
+
+panelsAnimation();
+window.setInterval(function () {panelsAnimation()}
+,63000)
+
+</script>

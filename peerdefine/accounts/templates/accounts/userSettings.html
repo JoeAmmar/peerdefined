@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load account %}
+{% load bootstrap3 %}
+
+{# Much of the metroui code was adapted from https://github.com/olton/Metro-UI-CSS/tree/master/docs/examples/tiles #}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'peerDefine/js/typeahead.js' %}"></script>
+<script type="text/javascript" src="{% static 'peerDefine/js/term_search_typeahead.js' %}"></script>
+<script src="https://cdn.metroui.org.ua/v4/js/metro.min.js"></script>
+{% endblock %}
+
+
+{% block cs %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="{% static 'peerDefine/css/autocompleteDropdown.css' %}">
+<link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-icons.min.css">
+{% endblock %}
+
+{% block content %}
+<br><br>
+<h1 class="text-center">User Settings</h1>
+<br><br>
+
+            <div class="">
+  <div id='tableUserSettings'class="row" style="display: flex;">
+
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 columnPhotos centerTextColums">
+                <a href="/accounts/password/change/" style="text-decoration:none; color:black;">
+                    <center><h1><span style="font-size: 5em;" class="userSettingIcons glyphicon glyphicon-asterisk"></span></h1>
+                    <h3><span class="userSettingIcons">Change Password</span></h3></center>
+                </a>
+
+</div>
+<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 columnPhotos centerTextColums">
+                <a href="/accounts/email/" style="text-decoration:none; color:black;">
+                    <center><h1><span style="font-size: 5em" class="userSettingIcons glyphicon glyphicon-envelope"></span></h1>
+                    <h3><span class="userSettingIcons">Email Settings</span></h3></center>
+                </a>
+              </div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 columnPhotos centerTextColums">
+                <a href="bookmarks/" style="text-decoration:none; color:black;">
+                    <h1><span style="font-size: 5em" class="userSettingIcons glyphicon glyphicon-bookmark"></span></h1>
+                    <center><h3><span class="userSettingIcons">Bookmark Settings</span></h3></center>
+                </a>
+                </div>
+                  </div>
+
+                </div>
+  </div>
+  <br><br><br><br><br><br>
+{% endblock %}

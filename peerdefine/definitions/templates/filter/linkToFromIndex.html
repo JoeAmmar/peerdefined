@@ -1,0 +1,18 @@
+<script>
+setTimeout(function(){
+if(window.location.href.includes("/#")){
+  var indexOfLinkDef = window.location.href.indexOf("#");
+  var definitionLinkId = window.location.href.substr(indexOfLinkDef+1);
+  var placeInDefinitionsList = defListPages.findIndex(def => def.id == definitionLinkId);
+  if(placeInDefinitionsList > (records_per_page - 1)){ //records_per_page = number of records on page
+    var defPageLocation = Math.ceil(placeInDefinitionsList/(records_per_page-1));
+    // scrolltop code taken from Tushar Gupta, last edited Nov 9, 13
+    // https://stackoverflow.com/questions/19874912/how-to-scroll-to-the-particular-div-using-jquery-or-javascript
+    current_page = defPageLocation;
+    changePage(defPageLocation);
+    $(window).scrollTop($(window.location.href.substr(indexOfLinkDef)).offset().top);
+  };
+}},
+5)
+
+  </script>
