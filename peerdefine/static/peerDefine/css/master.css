@@ -452,6 +452,7 @@ SEARCH BAR ON NAVBAR
         left: 0px;
       }
 
+
       /* User Settings Table */
       #tableUserSettings{
          border-spacing: 0em 2em !important;
@@ -612,4 +613,9 @@ display: block; margin-left: 2.2em;
 }
 #hideUntilClick #filterDiscList li label input{
 float: left; margin-top:0.15em;
+}
+
+.inlineRow{
+  width:50%;
+  height:110%;
 }

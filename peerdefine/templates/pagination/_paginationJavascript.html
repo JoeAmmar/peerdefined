@@ -31,6 +31,22 @@ Source: https://stackoverflow.com/questions/30864011/display-only-some-of-the-pa
       <li><a href="?page={{ i }}">{{ i }}</a></li>
   {% endif %}
 {% endfor %}
+
+// change based on mobile user
+// The following code taken from:
+// https://coderwall.com/p/i817wa/one-line-function-to-detect-mobile-devices-with-javascript
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+};
+if (isMobileDevice() == true) {
+  $("#mostBookmarkedTermBr").html("Most Bookmarked" + '<br>' + "Terms")
+}
+
+// change arrow for mobile user
+if (isMobileDevice() == true) {
+  $("#btn_prev")[0].childNodes[0].innerHTML= "&#8656;"
+  $("#btn_next")[0].childNodes[0].innerHTML= "&#8658;"
+}
 </script>
 
 {% endif %}

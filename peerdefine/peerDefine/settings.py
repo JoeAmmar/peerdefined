@@ -27,7 +27,7 @@ with open('sensitiveData/secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '10.0.0.28']
 
 
 # Application definition

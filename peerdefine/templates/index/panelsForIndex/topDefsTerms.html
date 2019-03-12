@@ -98,7 +98,11 @@
     <div class="panel-primary">
   <div class="panel-body" style="color: white; border-radius: 10px; background-color: #d3aa04; padding-bottom: 5px; padding-top: 5px; width:100%;" id="mostFolTermColor">
   <div class="hideUntilClick" id='hideUntilClick'>
-    <center><h3>Most Bookmarked Terms<h3>
+    <center>
+      {% if request.user_agent.is_mobile %}<h3>Most Bookmarked <br>Terms<h3>
+        {% else %}
+        <h3 id="mostBookmarkedTermBr">Most Bookmarked Terms<h3>
+          {% endif %}
       <div id="termmostFol0">
       <h4>{{termMostFollowed.0.name|truncatechars:20}}</h4>
       <h4>Followers: {{termMostFollowed.0.usersFollowing.all|length}}</h4>
