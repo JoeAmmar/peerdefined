@@ -23,8 +23,8 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 KEY_DIR = os.path.join(BASE_DIR, 'sensitiveData')
 KEYS_FILE = KEY_DIR + "/secret_key.txt"
-with open(KEYS_FILE) as f:
-    SECRET_KEY = f.read().strip()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -228,3 +228,5 @@ SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_SSL_REDIRECT = True
 X_FRAME_OPTIONS = 'DENY'
+
+MICROSOFT_KEY = os.getenv('Microsoft_Key')
