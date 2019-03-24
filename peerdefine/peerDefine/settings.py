@@ -27,7 +27,7 @@ with open('sensitiveData/secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '10.0.0.28']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -183,9 +183,7 @@ BOWER_INSTALLED_APPS = (
     'hammerjs',
 )
 
-#YOU NEED THIS LINE IF YOURE RUNNING Debug...
-# IT LETS PYTHON KNOW U WANT TO ONLY RUN Debug FROM LOCAL
-INTERNAL_IPS = ['127.0.0.1']
+
 
 
 SERIALIZATION_MODULES = {
@@ -214,17 +212,17 @@ ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_AUTO_SIGNUP = False
 
 
-# This was added after installation of djang-allauth (not sure if needed)
-SITE_ID = 1
-
-ACCOUNT_USERNAME_REQUIRED = True
-SOCIALACCOUNT_AUTO_SIGNUP = False
-
-
 ## SECURITY RELATED settings
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_PRELOAD = True
 
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# API KEYS
-with open('sensitiveData/microsoft_key.txt') as f:
-    MICROSOFT_KEY = f.read().strip()
+SECURE_BROWSER_XSS_FILTER = True
+
+SECURE_SSL_REDIRECT = True
+X_FRAME_OPTIONS = 'DENY'
