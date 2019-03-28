@@ -10,4 +10,4 @@
 web: gunicorn peerDefine.wsgi --log-file -\
 \pard\pardeftab720\sl280\partightenfactor0
 
-\f1 \cf2 \outl0\strokewidth0 \strokec2 web: python manage.py runserver 0.0.0.0:$PORT}
+\f1 \cf2 web: python manage.py runserver 0.0.0.0:$PORT}
