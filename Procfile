@@ -7,5 +7,4 @@
 \pard\pardeftab720\sl280\partightenfactor0
 
 \f0\fs24 \cf2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 web: gunicorn peerDefine.wsgi:application --log-file -\
-}
+\outl0\strokewidth0 \strokec2 web: gunicorn peerDefine.wsgi --log-file -}
