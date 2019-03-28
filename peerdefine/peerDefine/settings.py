@@ -29,9 +29,9 @@ KEYS_FILE = KEY_DIR + "/secret_key.txt"
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','peerdefined.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1','peerdefined.herokuapp.com', 'www.peerdefined.herokuapp.com']
 
 
 # Application definition
@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.facebook',
+    'gunicorn',
+    'django_heroku'
 ]
 
 #The following is used for tagulous package
