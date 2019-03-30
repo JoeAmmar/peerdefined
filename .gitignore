@@ -10,7 +10,6 @@ settingsProduction.py
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 downloads/
 eggs/
