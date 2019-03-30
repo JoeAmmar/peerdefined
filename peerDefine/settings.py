@@ -32,7 +32,7 @@ KEYS_FILE = KEY_DIR + "/secret_key.txt"
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost','0.0.0.0','peerdefined.herokuapp.com', 'www.peerdefined.herokuapp.com', '.herokuapp.com']
 
@@ -258,4 +258,19 @@ MICROSOFT_KEY = os.getenv('Microsoft_Key')
 
 django_heroku.settings(locals())
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}
 
