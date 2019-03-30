@@ -73,7 +73,7 @@ INSTALLED_APPS = [
     'gunicorn',
     'django_heroku',
 'whitenoise',
-'dj-database-url',
+'dj_database_url',
 'psycopg2'
 ]
 
