@@ -32,7 +32,7 @@ KEYS_FILE = KEY_DIR + "/secret_key.txt"
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','0.0.0.0','peerdefined.herokuapp.com', 'www.peerdefined.herokuapp.com', '.herokuapp.com']
 
@@ -181,7 +181,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'peerDefine/staticfiles')
 LOGIN_REDIRECT_URL = 'test'
 LOGOUT_REDIRECT_URL = 'thanks'
 
@@ -195,7 +195,7 @@ STATICFILES_DIRS = (
 #Static Files has defaults, I only added this here to include django-bower settings
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    #'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 ]
 
