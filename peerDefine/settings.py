@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import django_heroku 
 import gunicorn
+import whitenoise
+import dj-database-url
+import psycopg2
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,7 +71,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.facebook',
     'gunicorn',
-    'django_heroku'
+    'django_heroku',
+'whitenoise',
+'dj-database-url',
+'psycopg2'
 ]
 
 #The following is used for tagulous package
