@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import django_heroku 
 import gunicorn
-import dj_database_url
-import whitenoise
-import psycopg2
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -71,10 +68,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.facebook',
     'gunicorn',
-    'django_heroku',
-'whitenoise',
-'dj-database-url',
-'psycopg2'
+    'django_heroku'
 ]
 
 #The following is used for tagulous package
@@ -129,17 +123,12 @@ WSGI_APPLICATION = 'peerDefine.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'peerDefine',
-        'USER': os.getenv('dbUser'),
-        'PASSWORD': os.getenv('dbPas'),
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+
 
 
 # Password validation
