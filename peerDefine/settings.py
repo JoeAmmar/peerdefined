@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites', # Needed for django-allauth package (social media login/login manager)
+'whitenoise.runserver_nostatic',
     'debug_toolbar',
     'bootstrap3',
     'djangobower', # Bower handles javascript libraries
@@ -72,7 +73,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'gunicorn',
     'django_heroku',
-'whitenoise',
 'dj_database_url',
 'psycopg2'
 ]
@@ -98,7 +98,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'reversion.middleware.RevisionMiddleware',
+    'reversion.middleware.RevisionMiddleware'
 ]
 
 
