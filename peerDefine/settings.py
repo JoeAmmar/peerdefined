@@ -185,7 +185,6 @@ STATICFILES_FINDERS = [
     'djangobower.finders.BowerFinder',
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 #needed for root bower file
 BOWER_COMPONENTS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'components'))
