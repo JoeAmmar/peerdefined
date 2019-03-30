@@ -32,9 +32,9 @@ KEYS_FILE = KEY_DIR + "/secret_key.txt"
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['peerdefined.herokuapp.com', 'www.peerdefined.herokuapp.com', '.herokuapp.com']
+ALLOWED_HOSTS = ['localhost','0.0.0.0','peerdefined.herokuapp.com', 'www.peerdefined.herokuapp.com', '.herokuapp.com']
 
 
 # Application definition
