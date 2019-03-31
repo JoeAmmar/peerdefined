@@ -25,7 +25,8 @@ class ThanksPage(TemplateView):
 class AboutUs(TemplateView):
     template_name = 'about_us.html'
 
-
+class Privacy_Page(TemplateView):
+    template_name = 'privacy_page.html'
 class HomePage(TemplateView):
     template_name = 'index.html'
 # Code adapted from irene, answered on Feb 9 '17 at 6:10

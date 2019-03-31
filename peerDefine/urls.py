@@ -33,6 +33,7 @@ urlpatterns = [
     path('nested_admin/', include('nested_admin.urls')), # nested admin
     path('', views.HomePage.as_view(), name='home'),
     path('about_us/', views.AboutUs.as_view(), name = 'aboutus'), # Login Success: need to update later (very basic)
+    path('privacy/', views.Privacy_Page.as_view(), name = 'privacy_page'),
     path('accounts/', include('accounts.urls', namespace = 'accounts')), #Removed for django-allauth version below
     path('accounts/', include('allauth.urls')),
     path('terms/', include('terms.urls', namespace = 'terms')),
