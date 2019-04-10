@@ -10,8 +10,8 @@
 {% endblock %}
 {% block content %}
 <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
-
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=2090381074588614&autoLogAppEvents=1"></script>
 
 <div class="">
 
@@ -28,7 +28,7 @@
 <hr>
 <a href="{% provider_login_url 'google' %}"><img class="socialMediaGoogle" src="{% static 'peerDefine/img/logins/newgoogle2.png' %}" alt=""></a>
 <a href="{% provider_login_url 'facebook' %}"><img class="socialMediaFacebook pull-right" src="https://scontent-ort2-2.xx.fbcdn.net/v/t39.2365-6/17639236_1785253958471956_282550797298827264_n.png?_nc_cat=0&oh=a45d66ea2907a3531a4c56951cd3c024&oe=5BEDF4EA" alt=""></a>
-<div class="fb-login-button" data-size="large" data-button-type="continue_with" data-auto-logout-link="false" data-use-continue-as="false"></div>
+<div class="fb-login-button" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false"></div>
   </div>
 </div>
 
