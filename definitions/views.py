@@ -69,8 +69,7 @@ class AuthorsInline(InlineFormSet):
     model = models.Authors
     fields = ('in_text', 'citation')
     form_class = forms.AuthorsForm
-    max_num = 1
-    can_delete = False
+    factory_kwargs = {'max_num': 1, 'can_delete': False}
 
 # Definition Creation Class-Based View
 # With Authors inline
