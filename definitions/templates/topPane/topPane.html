@@ -1,9 +1,11 @@
 <!-- THIS TEMPLATE IS SPECIFIC TO THE PANE CONTAINING DEFINITION FILTER, PAGINATION, TIMELINE, AND CLIPBOARD -->
 
+
+<!-- SOME OF THE ICONS ON THIS PAGE ARE GENERATED USING TWEMOJI -->
 {% if definition_list.count > 0 %}
 
 <div class="inlineblock pull-right TopPanePadding">
-<a href="#" class="pull-right" id="selectAllDefs" title="Select all definitions" style="text-decoration: none;" role="button" onclick="checkAllDefs()" aria-expanded="false"><h1>&#10003;</h1></a>
+<a href="#" class="pull-right" id="selectAllDefs" title="Select all definitions" style="text-decoration: none;" role="button" onclick="checkAllDefs()" aria-expanded="false"><h1>&#x2714;</h1></a>
 <a href="#" class="pull-right checkMark2" title="Select all definitions" style="text-decoration: none;"  onclick="checkAllDefs()" aria-expanded="false"><h4 style="line-height:48px; width:22px; text-align: center; text-decoration: none; filter: brightness(80%);">&#10003;</h3></a>
 </div>
 
@@ -50,4 +52,11 @@
 </div>
 </div>
 </div>
+
+<<script type="text/javascript">
+twemoji.parse(document.getElementsByClassName('filterDisc pull-right')[0].childNodes[0])
+twemoji.parse(document.getElementsByClassName('showTimeline pull-right TopPanePadding')[0].childNodes[0])
+twemoji.parse(document.getElementById('citationClipboard'))
+twemoji.parse(document.getElementsByClassName('hideTimeline pull-right')[0])
+</script>
 {% endif %}

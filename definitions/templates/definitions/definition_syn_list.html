@@ -6,7 +6,9 @@
 <script type="text/javascript" src="{% static 'peerDefine/js/expandBox.js' %}"></script>
 <script type="text/javascript" src="{% static 'izitoast/dist/js/iziToast.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'hammerjs/hammer.min.js' %}"></script>
-
+<!-- Twemoji -->
+<!-- Some icons on this site use Twemoji -->
+<script src="https://twemoji.maxcdn.com/2/twemoji.min.js?12.0.0"></script>
 {% endblock %}
 
 
@@ -36,7 +38,7 @@
 
 
 {# Pagination bar #}
-{% if definition_list.count > 0 %}
+{% if definition_list.count > 10 %}
 {% include "pagination/_pagination.html" %}
 {% include "pagination/_paginationJavascript.html" %}
 {% endif %}

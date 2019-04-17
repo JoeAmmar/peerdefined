@@ -171,6 +171,16 @@ body {
     animation-duration: 0.4s
 }
 
+
+/* THE EMOJIS ON THE TOP PANE ON DEFINITIONS LIST PAGE */
+.emoji:hover {
+  filter: brightness(105%);
+}
+
+/* CHECK MARK FOR SELECT ALL (requires greater brightness) */
+#selectAllDefs h1 .emoji:hover{ filter: brightness(180%);}
+
+
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
@@ -351,11 +361,6 @@ SEARCH BAR ON NAVBAR
     position: absolute;
     color: red;
     overflow: hidden;
-}
-
-.checkMark2{
-  position: absolute;
-  overflow: hidden;
 }
 
 
