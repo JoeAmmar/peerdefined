@@ -173,6 +173,10 @@ body {
 
 
 /* THE EMOJIS ON THE TOP PANE ON DEFINITIONS LIST PAGE */
+
+.emoji{
+  height: 36px;
+}
 .emoji:hover {
   filter: brightness(105%);
 }
