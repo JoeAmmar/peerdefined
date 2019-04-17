@@ -182,6 +182,10 @@ body {
   filter: brightness(105%);
 }
 
+.hideTimelineX h4 .emoji{
+  height: 26px;
+}
+
 /* CHECK MARK FOR SELECT ALL (requires greater brightness) */
 #selectAllDefs h1 .emoji:hover{ filter: brightness(180%);}
 
