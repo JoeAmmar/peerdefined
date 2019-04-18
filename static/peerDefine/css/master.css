@@ -176,7 +176,7 @@ body {
 
 .emoji{
   height: 36px;
-  padding-bottom:3px;
+  padding-bottom:8px;
 }
 .emoji:hover {
   filter: brightness(105%);
