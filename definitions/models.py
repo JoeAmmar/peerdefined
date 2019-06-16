@@ -87,6 +87,7 @@ class Definition(models.Model):
 class Authors(models.Model):
     in_text = models.CharField(max_length=500, null=True, blank=True)
     citation = models.TextField(max_length=500, null=True, blank=True)
+    doi = models.CharField(max_length=100, null=True, blank=True)
     definitions = models.ForeignKey(Definition,
                                     related_name='author',
                                     on_delete = models.CASCADE,

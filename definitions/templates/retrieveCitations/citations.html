@@ -205,7 +205,7 @@ return fullCitation;
             var inTextForm = $('#id_author-0-in_text');
             inTextForm.val(inTextList)
 
-
+            var doiForm = $('#id_author-0-doi');
             // Code For Creating full APA Citation (for reference section)
             // This is specific to articles, not books or other media
 
@@ -258,6 +258,7 @@ return fullCitation;
 
             if (doi) {
               fullCitation += " doi\:" + doi
+              doiForm.val(doi)
             }
 
             // Assigning Citation Input Value in Definitions Form

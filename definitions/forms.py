@@ -10,10 +10,11 @@ class AuthorsForm(forms.ModelForm):
         super(AuthorsForm, self).__init__(*args, **kwargs)
     class Meta:
         model = models.Authors
-        fields = ('in_text', 'citation')
+        fields = ('in_text', 'citation', 'doi')
         labels = {
             'in_text': ('In Text Citation'),
-            'citation': ('Full Citation')
+            'citation': ('Full Citation'),
+            'doi':('DOI')
         }
 
 class DefinitionForm(forms.ModelForm):

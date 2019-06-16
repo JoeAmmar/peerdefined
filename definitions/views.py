@@ -67,7 +67,7 @@ class UserDefinitions(generic.ListView):
 # Creating inline form with Author Model
 class AuthorsInline(InlineFormSet):
     model = models.Authors
-    fields = ('in_text', 'citation')
+    fields = ('doi','in_text', 'citation')
     form_class = forms.AuthorsForm
     factory_kwargs = {'max_num': 1, 'can_delete': False}
 
