@@ -43,7 +43,7 @@
 
 {# Pagination bar #}
 
-{% if definition_list.count > 0 %}
+{% if definition_list.count > 10 %}
 {% include "pagination/_pagination.html" %}
 {% include "pagination/_paginationJavascript.html" %}
 {% endif %}
