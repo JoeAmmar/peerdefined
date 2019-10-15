@@ -91,7 +91,7 @@
   {% endfor %}
 </div>
 {# Pagination related script if definition count grater than 0 #}
-{% if definition_list.count > 10 %}
+{% if definition_list.count > 0 %}
 {% include "pagination/_pagination.html" %}
 {% include "pagination/_paginationJavascript.html" %}
 {% endif %}
