@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block js %}
-<script type="text/javascript" src="{% static 'tagulous/lib/jquery.js' %}"></script>
+
 <script type="text/javascript" src="{% static 'tagulous/lib/select2-3/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'tagulous/tagulous.js' %}"></script>
 <script type="text/javascript" src="{% static 'tagulous/adaptor/select2-3.js' %}"></script>
@@ -84,15 +84,12 @@
       </form>
       <p>
 
-        <div class="row" style="display: flex;">
-          <div class="poweredByImages1">
-         <img  style="width:100%; height:100%; padding-left:20%;" src="{% static 'peerDefine/img/articleMetadata/microsoftAcademic.jpg' %}">
-         </div>
-         <div class="poweredByImages2">
-           <img style="width:60%; height:100%; padding-left:20%;" src="{% static 'peerDefine/img/articleMetadata/crossref.svg' %}">
-           </div>
+
+          <div >
+            <img style="max-width:30%; padding-left:5%;" src="{% static 'peerDefine/img/articleMetadata/crossref.svg' %}">
 
          </div>
+
       </p>
       <p></p>
     </div>

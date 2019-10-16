@@ -1,7 +1,7 @@
 <script>
   // needs additional commenting
   // modal.html in retrieveCitations folder has relevant code
-  // every time modal is opened flag is set to false and num is set to 0
+
 
 
   // Last value functions (retrieve last value of array/String)
@@ -116,8 +116,7 @@ return fullCitation;
 
   // num refers to how many times Microsoft API request is sent (on single search)
   var num = 0;
-  // flag == true means that Microsoft Academic API failed to interpret search query
-  var flag = false;
+
 
   // query user inputs to search
   var searchedValue = $('#citationInput').val();
@@ -126,170 +125,9 @@ return fullCitation;
   $('#citationSubmit').click(function(event) {
     var searchedValue = $('#citationInput').val(); //might be redundant
     var searchType = $('#searchType').val();
-    // if search type is title and microsoft search did not already fail (flag != true) and number of times searched is less than 1
-    // note number of times searched and flag variable reset after closing and re-opening modal
-    if (searchType == 'title' && num < 1 && flag != true) {
 
-      // prevents default click action (might not influence anything here)
-      event.preventDefault();
-
-      // ajax  (Microsoft API article search)
-      var raw = $.ajax({
-        type: "POST",
-        url: "{% url 'definitions:citation_search' %}",
-        data: {
-          qry: searchedValue,
-          searchType: searchType,
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-        },
-        async: false,
-        success: function(data) {
-
-          // If Microsoft API can succesfully interpret search query, extract meta-data
-          if (data.flag !== "True") {
-            dataResults = data.responseText
-            //console.log(data.responseText)
-            evalClean = dataResults['entities'][0]
-            authors = evalClean['AA']
-            title = evalClean['DN']
-            year = evalClean['Y']
-            journal = evalClean['VFN']
-            volume = evalClean['V']
-            issue = evalClean['I']
-            firstPage = evalClean['FP']
-            lastPage = evalClean['LP']
-            citations = evalClean['CC']
-            doi = JSON.parse(evalClean['E'])['DOI']
-
-            // set value for 'year' input box based on article meta-data
-            var yearForm = $('#id_year');
-            yearForm.val(year)
-
-            // set value for citation count input box based on article meta-data
-            var citationCountForm = $('#id_citeNumber');
-            citationCountForm.val(citations);
-
-            // retrieve list of authors
-            authorsLen = authors.length;
-            authorList = []
-            for (var i = 0; i < authorsLen; i++) {
-              authorList.push(authors[i]['DAuN'])
-            };
-
-
-            //Getting in-text citation formatting set up then assigning to in-text input value in form
-            // In-text String variable
-            var inTextList = ""
-            // Formatting based on 1 author
-            if (authorList.length == 1) {
-              inTextList += authorList[0].split(" ").last().concat(", ")
-              inTextList += year
-
-            // Formatting based on 2 authors
-            }else if (authorList.length == 2) {
-              inTextList += authorList[0].split(" ").last().concat(" & ") +
-                authorList[1].split(" ").last().concat(", ")
-              inTextList += year
-            } else if (authorList.length < 6) {
-              inTextList += authorList[0].split(" ").last().concat(", ")
-              for (var i = 1; i < authorList.length; i++) {
-                inTextList += authorList[i].split(" ").last().concat(", ")
-              }
-              inTextList += year
-            } else {
-              inTextList += authorList[0].split(" ").last() +
-                " et al., " + year
-            };
-
-            // Setting in-text input value in form to formatted in-text citation
-            var inTextForm = $('#id_author-0-in_text');
-            inTextForm.val(inTextList)
-
-            var doiForm = $('#id_author-0-doi');
-            // Code For Creating full APA Citation (for reference section)
-            // This is specific to articles, not books or other media
-
-            fullCitation = ''
-            fullCitation += referenceAuthor();
-
-            // Formats title to match APA style (Capitalize after colon)
-            formatTitle = ''
-            titleChars = title.split("")
-            titleIndex = -1
-            if (title.search('\\:') != -1) {
-              titleIndex = title.search('\\:')
-            }
-            if (titleIndex != -1) {
-              if (titleChars[titleIndex + 1] != ' ') {
-                titleChars[titleIndex + 1] = titleChars[titleIndex + 1].toUpperCase()
-              } else if (titleChars[titleIndex + 2] != ' ') {
-                titleChars[titleIndex + 2] = titleChars[titleIndex + 2].toUpperCase()
-              }
-            };
-            formatTitle = titleChars.join("")
-
-
-
-
-            // Adding title information to citation
-            fullCitation += "(" + year + "). " + formatTitle
-            if (title.last() != '.') {
-              fullCitation += '.'
-            } else {
-              fullCitation += ''
-            }
-
-            // Adding jounal title, volume, and range of pages
-            if (journal != "") {
-              fullCitation += ' ' + journal + ', '
-            }
-
-            if (volume) {
-              fullCitation += volume + ', '
-            }
-
-            if (firstPage) {
-              fullCitation += firstPage + '-'
-            }
-
-            if (lastPage) {
-              fullCitation += lastPage + "."
-            }
-
-            if (doi) {
-              fullCitation += " doi\:" + doi
-              doiForm.val(doi)
-            }
-
-            // Assigning Citation Input Value in Definitions Form
-            var citationForm = $('#id_author-0-citation');
-            citationForm.val(fullCitation)
-
-            // Alerting user of success and hiding modal!
-            alert("Citation Meta-Data Retrieved Succesfully!");
-            modal.style.display = "none";
-
-          // Summary of below code: if Microsoft search fails, resubmit search with crossReff
-          // Logic below applies if Microsoft API has issues interpretting search query (flag == "True")
-          // num refers to the number of times the API has been called (only one time allowed)
-          } else if (data.flag === "True" && num < 1) {
-            flag = true;
-            $('#citationSubmit').click()
-            num += 1
-          }
-
-
-
-
-        }
-
-
-      }) // WHERE AJAX REQUEST ENDS
-
-    } // WHERE IF REQUEST == TITLE ENDS
 
     // If Microsoft search fails or user specifies a DOI search, search using Crossref
-    if (flag == true || $('#searchType').val() == 'doi') {
 
       var searchedValue = $('#citationInput').val();
 
@@ -518,6 +356,6 @@ return fullCitation;
         modal.style.display = "none";
       }
 
-    }
+
   });
 </script>
