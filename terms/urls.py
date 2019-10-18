@@ -11,5 +11,7 @@ urlpatterns = [
     re_path(r"^$", views.ListTerms.as_view(), name="all"),
     re_path(r"^new/$", views.CreateTerm.as_view(), name="create"),
     path('search/', views.TermSearchListView.as_view(), name='term_search_list_view'),
-    re_path(r'^(?P<term_id>\d+)/follow$', views.followTerm, name="follow_term")
+    re_path(r'^(?P<term_id>\d+)/follow$', views.followTerm, name="follow_term"),
+    re_path(r'^api$', views.TermAPI.as_view(), name="term_API"),
+    re_path(r'^api/(?P<query>[-\w]+)$', views.TermSearchAPI.as_view(), name="term_search_API"),
 ]

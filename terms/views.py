@@ -8,9 +8,13 @@ from django.views import generic
 from functools import reduce
 import json
 import operator
+from rest_framework import generics
+
 
 # Model related
 from terms.models import Term
+from terms.serializers import TermSerializer
+from definitions.models import Definition, Authors, Synonym, Discipline
 
 # Views
 
@@ -67,3 +71,27 @@ def followTerm(request,term_id):
             }),
             content_type="application/json"
         )
+
+
+class TermAPI(generics.ListAPIView):
+    """
+    Retrieve all Terms
+    """
+    queryset = Term.objects.prefetch_related('definitions')
+    serializer_class = TermSerializer
+
+
+
+class TermSearchAPI(generics.ListAPIView):
+    """
+    Retrieve all Terms
+    """
+    queryset = Term.objects.prefetch_related('definitions')
+    serializer_class = TermSerializer
+
+    def get_queryset(self):
+        """
+        filtering by a term name search
+        """
+        search = self.kwargs['query']
+        return Term.objects.prefetch_related('definitions').filter(name__icontains=search)

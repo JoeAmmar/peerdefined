@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites', # Needed for django-allauth package (social media login/login manager)
+	'rest_framework', # API
 'whitenoise.runserver_nostatic',
     'debug_toolbar',
     'bootstrap3',

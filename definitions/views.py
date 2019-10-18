@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.db.models import Q
 from django.db.models import Case, IntegerField, Value, When
-from django.http import Http404,HttpResponseRedirect, HttpResponse
+from django.http import Http404,HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -28,15 +28,17 @@ import urllib.request # citationCode
 import urllib.parse # citationCode
 import urllib.error # citationCode
 
-
+from ratelimit.utils import is_ratelimited
 # importing from models and forms
 from definitions import models
 from definitions import forms
+
 from terms.models import Term
 
 
 # Getting user model
 User = get_user_model()
+
 
 
 #Defitions List for Specific User
@@ -87,35 +89,39 @@ class DefinitionCreateView(CreateWithInlinesView, UserFormKwargsMixin, LoginRequ
         return context
 
     def forms_valid(self, form, inlines):
-        # add the initial value here
-        # but first get the id from the request GET data,
-        self.object = form.save(commit=False)
-        self.object.user = self.request.user
-        self.object.original_user = self.request.user
-        self.object.term = Term.objects.get(id=self.kwargs["term_id"])
-        self.object.save()
 
-        # This section creates the description for notifications (for users following a definition or term)
-        # It's used on the notifications screen to allow url to redirect to the
-                # term (if user does not have access to def history)
+        if is_ratelimited(self.request, rate='1/5m', key='user', increment=True, group='createDefinition') & self.request.user.groups.filter(name='Super User').exists():
+            return render(self.request, 'signup_ratelimit.html', status=429)
+        else:
+            # add the initial value here
+            # but first get the id from the request GET data,
+            self.object = form.save(commit=False)
+            self.object.user = self.request.user
+            self.object.original_user = self.request.user
+            self.object.term = Term.objects.get(id=self.kwargs["term_id"])
+            self.object.save()
 
-        # Insert whitespace between termId and termslug in order to extract each properly
-        blankTimes = 10-len(str(self.object.id))
-        blanks = ""
-        for d in range(0,blankTimes):
-            blanks = blanks + " "
+            # This section creates the description for notifications (for users following a definition or term)
+            # It's used on the notifications screen to allow url to redirect to the
+                    # term (if user does not have access to def history)
 
-        termSlugId = str(self.object.id) + blanks + self.object.term.slug
+            # Insert whitespace between termId and termslug in order to extract each properly
+            blankTimes = 10-len(str(self.object.id))
+            blanks = ""
+            for d in range(0,blankTimes):
+                blanks = blanks + " "
 
-        #Extract users following a term from which definition originates
-        termFollow = self.object.term.usersFollowing.all().exclude(username=self.request.user)
+            termSlugId = str(self.object.id) + blanks + self.object.term.slug
 
-        #Send notification to users following term associated with this definition.
-        notify.send(sender = self.request.user,
-                        recipient=termFollow,
-                         verb=str(self.request.user) + ' created a new definition in ' + str(self.object.term.name) + ' (' + inlines[0][0]['in_text'][0].data['value'] + ')',
-                         description=termSlugId)
-        return super().forms_valid(form, inlines)
+            #Extract users following a term from which definition originates
+            termFollow = self.object.term.usersFollowing.all().exclude(username=self.request.user)
+
+            #Send notification to users following term associated with this definition.
+            notify.send(sender = self.request.user,
+                            recipient=termFollow,
+                             verb=str(self.request.user) + ' created a new definition in ' + str(self.object.term.name) + ' (' + inlines[0][0]['in_text'][0].data['value'] + ')',
+                             description=termSlugId)
+            return super().forms_valid(form, inlines)
 
 
 class DeleteDefinition(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
@@ -520,84 +526,3 @@ def follow_definition(request,definition_id):
             )
     else:
         return HttpResponse("You are the Original User", content_type='application/json')
-
-
-## Citation Search (Microsoft Academic API) AJAX
-
-@login_required
-def citation_request(request):
-    if request.is_ajax() and request.method == "POST":
-        headers = {
-        # Request headers
-        'Ocp-Apim-Subscription-Key': settings.MICROSOFT_KEY,
-        }
-        qry = str(request.POST.get('qry')) #Get qry from ajax request
-        params = urllib.parse.urlencode({
-            # Request parameters
-            'query': qry,
-            'complete': '0',
-            'count': '10',
-            'model': 'latest',
-        })
-        try:
-            # Request related to interpreting search entry
-            conn = http.client.HTTPSConnection('api.labs.cognitive.microsoft.com')
-            conn.request("GET", "/academic/v1.0/interpret?%s" %
-                         params, "{body}", headers)
-            response = conn.getresponse()
-            encoding = response.info().get_content_charset('utf8')
-            data = response.read().decode(encoding)
-            jsons = json.loads(data)
-            #print(jsons)
-            conn.close()
-            print("Microsoft API Request Sent!")
-        except Exception as e:
-            print("[Errno {0}] {1}".format(e.errno, e.strerror))
-
-        if(jsons['interpretations'] == []):
-            # If Microsoft can't interpret search entry, then return flag == True (logic used in Ajax to switch to crossRef search)
-          return HttpResponse(
-                  json.dumps({'responseText': jsons,
-                  'flag': 'True'
-                  }),
-                  content_type="application/json"
-              )
-
-        else:
-            # var eval is what's used to search for the article
-            eval = jsons['interpretations'][0]['rules'][0]['output']['value']
-            #####################################
-            # EVALUATE
-            #####################################
-            headers = {
-                # Request headers
-                'Ocp-Apim-Subscription-Key': settings.MICROSOFT_KEY,
-            }
-            params = urllib.parse.urlencode({
-                # Request parameters
-                'expr': eval,
-                'model': 'latest',
-                'count': '10',
-                'offset': '0',
-                'attributes': 'Ti,Y,CC,AA.AuN,AA.DAuN,AA.AuId,E.VFN,E.DN,J.JId,E.DOI,E.V,E.I,E.FP,E.LP,AA.S,E'
-            })
-            try:
-                # request related to retrieving article
-                conn = http.client.HTTPSConnection('api.labs.cognitive.microsoft.com')
-                conn.request("GET", "/academic/v1.0/evaluate?%s" %
-                             params, "{body}", headers)
-                response = conn.getresponse()
-                encoding = response.info().get_content_charset('utf8')
-                data = response.read().decode(encoding)
-                jsonsArt = json.loads(data)
-                conn.close()
-                return HttpResponse(
-                        json.dumps({'responseText': jsonsArt,
-                                    'flag': 'False' # logic telling ajax whether microsoft search failed (False == did not fail)
-                        }),
-                        content_type="application/json"
-                    )
-            except:
-                raise ArithmeticError("Something Went Wrong") # error raised if something goes wrong with retrieving article meta-data
-    else:
-        raise Http404

@@ -50,7 +50,6 @@ class Definition(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     # Actual definition
     defs = models.TextField()
-    defs_html = models.TextField(editable=False) #Might delete
     term = models.ForeignKey(Term,
                              related_name='definitions',
                              null=False,
@@ -86,7 +85,7 @@ class Definition(models.Model):
 #Authors Keeps citation information (APA style)
 class Authors(models.Model):
     in_text = models.CharField(max_length=500, null=True, blank=True)
-    citation = models.TextField(max_length=500, null=True, blank=True)
+    citation = models.TextField(max_length=1200, null=True, blank=True)
     doi = models.CharField(max_length=100, null=True, blank=True)
     definitions = models.ForeignKey(Definition,
                                     related_name='author',
