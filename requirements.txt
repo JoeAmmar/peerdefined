@@ -12,7 +12,7 @@ chardet==3.0.4
 Click==7.0
 defusedxml==0.5.0
 dj-database-url==0.5.0
-Django==2.2.6
+Django==2.2.10
 django-allauth==0.39.1
 django-appconf==1.0.3
 -e git+https://github.com/yourlabs/django-autocomplete-light.git@13529dd158769c3ea29b6c7bade9d06cb70acf34#egg=django_autocomplete_light
