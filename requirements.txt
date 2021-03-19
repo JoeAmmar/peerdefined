@@ -37,7 +37,7 @@ django-select2==7.0.3
 django-select2-forms==2.0.2
 django-sortedm2m==1.5.0
 django-tagulous==0.14.0
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 dparse==0.4.1
 Faker==0.8.12
 future==0.16.0
