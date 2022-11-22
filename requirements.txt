@@ -51,7 +51,7 @@ misaka==2.1.0
 nodeenv==1.3.0
 oauthlib==2.1.0
 packaging==18.0
-Pillow==5.0.0
+Pillow==9.3.0
 psycopg2==2.7.7
 pycparser==2.18
 pyparsing==2.2.0
